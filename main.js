@@ -629,11 +629,24 @@ function OutputResults_Kernel() {
 	var opt = Kernel(spike_time);
 	var opty = new Array();
 	kern(spike_time, opt, opty);
+
+	//save as csv
+	var filemessage = "X-AXIS,Y-AXIS\\n";
+	filemessage += spike_time[0].toFixed(3) + ",0\\n";
+	for (var i = 0; i < spike_time.length; i++) {
+		filemessage += spike_time[i].toFixed(3) + "," + opty[i].toFixed(3) + "\\n";
+	}
+	filemessage += spike_time[spike_time.length - 1].toFixed(3) + ",0\\n";
+
+	
 	WIN_RESULTS = window.open();
 	WIN_RESULTS.document.open();
 	WIN_RESULTS.document.writeln("<title>Data Sheet of the Optimized Histogram</title>");
 	WIN_RESULTS.document.writeln("<h2>Histgram: Kernel Density Estimation</h2>");
 	WIN_RESULTS.document.writeln("Optimal Bandwidth: <b>"+opt.toFixed(3)+"</b><br><br>");
+
+	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
+	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
 	for (var i=0;i<spike_time.length;i++) {
 		WIN_RESULTS.document.writeln("<td>"+spike_time[i].toFixed(3)+"</td>");
@@ -652,11 +665,23 @@ function OutputResults_Kernel2() {
 	var opt = Kernel(spike_time);
 	var opty = new Array();
 	kern2(spike_time, opt, opty);
+
+	//save as csv
+	var filemessage = "X-AXIS,Y-AXIS\\n";
+	filemessage += spike_time[0].toFixed(3) + ",0\\n";
+	for (var i = 0; i < spike_time.length; i++) {
+		filemessage += spike_time[i].toFixed(3) + "," + opty[i].toFixed(3) + "\\n";
+	}
+	filemessage += spike_time[spike_time.length - 1] + ",0\\n";
+	
 	WIN_RESULTS = window.open();
 	WIN_RESULTS.document.open();
 	WIN_RESULTS.document.writeln("<title>Data Sheet of the Optimized Histogram</title>");
 	WIN_RESULTS.document.writeln("<h2>Histgram: Kernel Density Estimation</h2>");
 	WIN_RESULTS.document.writeln("Optimal Bandwidth: <b>"+opt.toFixed(3)+"</b><br><br>");
+	
+	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
+	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
 	for (var i=0;i<spike_time.length;i++) {
 		WIN_RESULTS.document.writeln("<td>"+spike_time[i].toFixed(3)+"</td>");
