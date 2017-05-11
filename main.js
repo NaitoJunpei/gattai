@@ -115,6 +115,10 @@ function Gamma( kappa ){
 	return (x_int+x_frac)/kappa;
 }
 
+var time_old = new Array();
+//現在のローカル時間が格納された、Date オブジェクトを作成する
+var date_obj = new Date();
+
 // メイン関数
 function Main() {
   var spike_time = new Array();
@@ -125,27 +129,24 @@ function Main() {
   onset = spike_time[0] - 0.001 * (spike_time[spike_num - 1] - spike_time[0]);
   offset = spike_time[spike_num - 1] + 0.001 * (spike_time[spike_num - 1] - spike_time[0]);
   
-  //現在のローカル時間が格納された、Date オブジェクトを作成する
-  var date_obj = new Date();
   // 測定開始時に経過時間を変数に残す
-  var time_old = new Array();
   time_old[0] = new Date().getTime();
   SpikeRaster(spike_time);
   time_old[1] = new Date().getTime();
   DrawGraph_SSOS(spike_time);			// 旧法新法
-  time_old[2] = new Date().getTime();
-  DrawGraph_Kernel(spike_time);		// カーネル法
   time_old[3] = new Date().getTime();
-  DrawGraph_Kernel2(spike_time);	// カーネル法(折り返し)
+  DrawGraph_Kernel(spike_time);		// カーネル法
   time_old[4] = new Date().getTime();
+  DrawGraph_Kernel2(spike_time);	// カーネル法(折り返し)
+  time_old[5] = new Date().getTime();
   //DrawGraph_BayesNP(spike_time);	// ノンポアソンベイズ推定
   //time_old[5] = new Date().getTime();
   DrawGraph_Bayes(spike_time);	// ベイズ推定
-  time_old[5] = new Date().getTime();
-  DrawGraph_HMM(spike_time);		// 隠れマルコフモデル
   time_old[6] = new Date().getTime();
+  DrawGraph_HMM(spike_time);		// 隠れマルコフモデル
+  time_old[7] = new Date().getTime();
   
-  document.getElementById("time").innerHTML = "Spike Raster : " + (time_old[1]-time_old[0]) + "<br>SSOS : " + (time_old[2]-time_old[1]) + "<br>Kernel1 : " + (time_old[3]-time_old[2]) + "<br>Kernel2 : " + (time_old[4]-time_old[3]) + "<br>Bayes : " + (time_old[5]-time_old[4]) + "<br>HMM : " + (time_old[6]-time_old[5]);
+  document.getElementById("time").innerHTML = "Spike Raster : " + (time_old[1]-time_old[0]) + " ms<br>(A) : " + (time_old[2]-time_old[1]) + " ms<br>(B) : " + (time_old[3]-time_old[2]) + " ms<br>(C) : " + (time_old[4]-time_old[3]) + " ms<br>(D) : " + (time_old[5]-time_old[4]) + " ms<br>(E) : " + (time_old[6]-time_old[5]) + " ms<br>(F) : " + (time_old[7]-time_old[6]) + " ms";
   
   //DrawGraph(spike_time, SS(spike_time), "SS");  // 旧法
   //DrawGraph(spike_time, OS(spike_time), "OS");  // 新法
@@ -321,6 +322,9 @@ function DrawGraph_SSOS(spike_time){
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 	document.getElementById("optimal_SS").innerHTML = "　<INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:506px;\" value=\"data sheet\" onclick=\"OutputResults_SS()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:605px\" value=\"more detail\" onclick=\"location.href='" + url1 + "'\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:710px\" value=\"related site\" onclick=\"location.href='" + url2 + "'\">";
+	
+
+	time_old[2] = new Date().getTime();
 	
 	//OS
 	wrap = d3.select('#graph_OS');
