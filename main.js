@@ -702,10 +702,29 @@ function OutputResults_HMM() {
 	var time = 0;
 	opty = get_hmm_ratefunc(spike_time, opt);	//描画の細かさ0.05 ?
 
+	//save as csv
+	var filemessage = "X-AXIS,Y-AXIS\\n";
+	filemessage += "0,0\\n";
+	filemessage += "0," + opty[0][1].toFixed(3) + "\\n"
+	time += opt;
+	for (var i = 1; i < opty.length; i++) {
+		if (opty[i][1] != opty[i - 1][1]) {
+			filemessage += time.toFixed(3) + "," + opty[i - 1][1].toFixed(3) + "\\n";
+			filemessage += time.toFixed(3) + "," + opty[i][1].toFixed(3) + "\\n";
+		}
+		time += opt;
+	}
+	filemessage += time.toFixed(3) + "," + opty[opty.length - 1][1].toFixed(3) + "\\n";
+	filemessage += time.toFixed(3) + ",0\\n";
+	time = 0;
+		   
 	WIN_RESULTS = window.open();
 	WIN_RESULTS.document.open();
 	WIN_RESULTS.document.writeln("<title>Data Sheet of the Optimized Histogram</title>");
 	WIN_RESULTS.document.writeln("<h2>Histgram: Two state hidden Markov model</h2>");
+
+	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
+
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
 	WIN_RESULTS.document.writeln("<td>0.00</td><td>"+time.toFixed(3)+"</td>");
 	time+=opt;
