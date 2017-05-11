@@ -44,6 +44,12 @@ function RandomData() {
     t1=Solve(0.0,Gamma(1.0));
     document.data.spikes.value = Number(t1.toFixed(3));
     var j=1;
+
+    Alpha = 2.0*Math.PI*MT.next();
+    Beta = 2.0*Math.PI*MT.next();
+    Theta = 2.0*Math.PI*MT.next();
+    Amp = 0.3+1.2*MT.next();
+    
     var kappa = Math.random() * 1.25 + 0.75;
     while(1){
         t2=t1+Solve(t1,Gamma(kappa));
@@ -54,14 +60,14 @@ function RandomData() {
     }
     return 0;
 }
-
+    
 var Base=30.0;
 var Amplitude=10.0;
 var TIME=10.0;
 var Period=[2.0/Math.PI,1.41421356/Math.PI,0.8989898/Math.PI];
 
 function Rate_integral(prev_time,new_time){
-	return Base*(new_time-prev_time) - Amplitude*Period[0]*Amp*( Math.cos(Alpha+new_time/Period[0]/Amp) - Math.cos(Alpha+prev_time/Period[0]/Amp) ) - Amplitude*Period[1]*Amp*( Math.cos(Beta+new_time/Period[1]/Amp) - Math.cos(Beta+prev_time/Period[1]/Amp) ) - Amplitude*Period[2]*Amp*( Math.cos(Theta+new_time/Period[2]/Amp) - Math.cos(Theta+prev_time/Period[2]/Amp) );
+    return Base*(new_time-prev_time) - Amplitude*Period[0]*Amp*( Math.cos(Alpha+new_time/Period[0]/Amp) - Math.cos(Alpha+prev_time/Period[0]/Amp) ) - Amplitude*Period[1]*Amp*( Math.cos(Beta+new_time/Period[1]/Amp) - Math.cos(Beta+prev_time/Period[1]/Amp) ) - Amplitude*Period[2]*Amp*( Math.cos(Theta+new_time/Period[2]/Amp) - Math.cos(Theta+prev_time/Period[2]/Amp) );
 }
 
 function Solve(prev_time,interval){
