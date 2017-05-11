@@ -756,11 +756,22 @@ function OutputResults_Bayes(){
 	var kalman_data = SecondStage(spike_time);
 	// ThirdStage(spike_time,beta);
 
+	//save as csv
+	var filemessage = "X-AXIS,Y-AXIS\\n";
+	filemessage += ((spike_time[0] + spike_time[1]) / 2).toFixed(3) + ",0\\n";
+	for (var i = 0; i < spike_time.length - 1; i++) {
+		filemessage += ((spike_time[i] + spike_time[i + 1]) / 2).toFixed(3) + "," + kalman_data[0][i].toFixed(3) + "\\n";
+	}
+	filemessage += ((spike_time[spike_time.length - 2] + spike_time[spike_time.length - 1]) / 2).toFixed(3) + ",0\\n" 
+
 	WIN_RESULTS = window.open();
 	WIN_RESULTS.document.open();
 	WIN_RESULTS.document.writeln("<title>Data Sheet of the Optimized Histogram</title>");
 	WIN_RESULTS.document.writeln("<h2>Histgram: Bayesian model Estimation</h2>");
 	WIN_RESULTS.document.writeln("<br><br>");
+
+	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
+	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
 	for (var i=0;i<spike_time.length;i++) {
 		WIN_RESULTS.document.writeln("<td>"+spike_time[i].toFixed(3)+"</td>");
