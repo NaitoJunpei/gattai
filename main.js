@@ -540,11 +540,24 @@ function OutputResults_SS() {
 	  var opt_rate = new Array();
 	  opt_binsize = SSOS(spike_time);
 	  EstimateRate(spike_time, opt_binsize[0], opt_rate);
+
+	//save as csv
+	var filemessage = "X-AXIS,Y-AXIS\\n";
+	filemessage += onset.toFixed(2) + ",0\\n";
+	for (var i = 0; i < opt_rate.length; i++) {
+		filemessage += (onset + i * opt_binsize[0]).toFixed(2) + "," + opt_rate[i].toFixed(2) + "\\n";
+		filemessage += (onset + (i + 1) * opt_binsize[0]).toFixed(2) + "," + opt_rate[i].toFixed(2) + "\\n";
+	}
+	filemessage += (onset + opt_rate.length * opt_binsize[0]).toFixed(2) + ",0\\n";
+	
+
 	  WIN_RESULTS = window.open();
 	  WIN_RESULTS.document.open();
 	  WIN_RESULTS.document.writeln("<title>Data Sheet of the Optimized Histogram</title>");
-	  WIN_RESULTS.document.writeln("<h2>Histgram: Poissonian optimization</h2>");
+	WIN_RESULTS.document.writeln("<h2>Histgram: Poissonian optimization</h2>");
 	  WIN_RESULTS.document.writeln("Optimal binsize: <b>"+opt_binsize[0].toFixed(2)+"</b><br><br>");
+	WIN_RESULTS.document.writeln("<div id='Output'></div>");
+	WIN_RESULTS.document.writeln("<script type='text/javascript'>var myBlob = new Blob([\"" + filemessage + "\"], {type: 'text/html'}); var url = URL.createObjectURL(myBlob); document.getElementById('Output').innerHTML = '<a href=' + url + ' download=datasheet.csv>download as csv</a>';</script>");
 	  WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
 		WIN_RESULTS.document.writeln("<td>0.00</td>");
 		for (var i=0;i<opt_rate.length;i++) {
