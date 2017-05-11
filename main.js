@@ -536,14 +536,18 @@ function EstimateRate(spike_time, opt_binsize, opt_rate) {
   return rate_max;
 }
 // データ出力
+function GenerateOutputFileMessage(message) {
+	return "<div id='Output'></div> <script type='text/javascript'>var myBlob = new Blob([\"" + message + "\"], {type: 'text/html'}); var url = URL.createObjectURL(myBlob); document.getElementById('Output').innerHTML = '<a href=' + url + ' download=datasheet.csv>download as csv</a>';</script>";
+}
+
 function OutputResults_SS() {
-	  var result;
-	  var spike_time = new Array();
-	  PostData(spike_time);
-	  var opt_binsize = new Array();
-	  var opt_rate = new Array();
-	  opt_binsize = SSOS(spike_time);
-	  EstimateRate(spike_time, opt_binsize[0], opt_rate);
+	var result;
+	var spike_time = new Array();
+	PostData(spike_time);
+	var opt_binsize = new Array();
+	var opt_rate = new Array();
+	opt_binsize = SSOS(spike_time);
+	EstimateRate(spike_time, opt_binsize[0], opt_rate);
 
 	//save as csv
 	var filemessage = "X-AXIS,Y-AXIS\\n";
@@ -553,29 +557,29 @@ function OutputResults_SS() {
 		filemessage += (onset + (i + 1) * opt_binsize[0]).toFixed(2) + "," + opt_rate[i].toFixed(2) + "\\n";
 	}
 	filemessage += (onset + opt_rate.length * opt_binsize[0]).toFixed(2) + ",0\\n";
-	
 
-	  WIN_RESULTS = window.open();
-	  WIN_RESULTS.document.open();
-	  WIN_RESULTS.document.writeln("<title>Data Sheet of the Optimized Histogram</title>");
+	WIN_RESULTS = window.open();
+	WIN_RESULTS.document.open();
+	WIN_RESULTS.document.writeln("<title>Data Sheet of the Optimized Histogram</title>");
 	WIN_RESULTS.document.writeln("<h2>Histgram: Poissonian optimization</h2>");
-	  WIN_RESULTS.document.writeln("Optimal binsize: <b>"+opt_binsize[0].toFixed(2)+"</b><br><br>");
-	WIN_RESULTS.document.writeln("<div id='Output'></div>");
-	WIN_RESULTS.document.writeln("<script type='text/javascript'>var myBlob = new Blob([\"" + filemessage + "\"], {type: 'text/html'}); var url = URL.createObjectURL(myBlob); document.getElementById('Output').innerHTML = '<a href=' + url + ' download=datasheet.csv>download as csv</a>';</script>");
-	  WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
-		WIN_RESULTS.document.writeln("<td>0.00</td>");
-		for (var i=0;i<opt_rate.length;i++) {
-			WIN_RESULTS.document.writeln("<td>" + (onset + i * opt_binsize[0]).toFixed(2) + "</td><td>" + (onset + (i + 1) * opt_binsize[0]).toFixed(2) + "</td>");
-		}
-		WIN_RESULTS.document.writeln("<td>" + (onset + (opt_rate.length-1) * opt_binsize[0]).toFixed(2) + "</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
-		WIN_RESULTS.document.writeln("<td>0.00</td>");
-		for (var i=0;i<opt_rate.length;i++) {
-			WIN_RESULTS.document.writeln("<td>"+ opt_rate[i].toFixed(2)+"</td><td>"+ opt_rate[i].toFixed(2) +"</td>");
-		}
-		WIN_RESULTS.document.writeln("<td>0.00</td>");
-		WIN_RESULTS.document.writeln("</tr></table><br>");
-		WIN_RESULTS.document.close();
+	WIN_RESULTS.document.writeln("Optimal binsize: <b>"+opt_binsize[0].toFixed(2)+"</b><br><br>");
+
+	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
+
+	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
+	WIN_RESULTS.document.writeln("<td>0.00</td>");
+	for (var i=0;i<opt_rate.length;i++) {
+		WIN_RESULTS.document.writeln("<td>" + (onset + i * opt_binsize[0]).toFixed(2) + "</td><td>" + (onset + (i + 1) * opt_binsize[0]).toFixed(2) + "</td>");
 	}
+	WIN_RESULTS.document.writeln("<td>" + (onset + (opt_rate.length-1) * opt_binsize[0]).toFixed(2) + "</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
+	WIN_RESULTS.document.writeln("<td>0.00</td>");
+	for (var i=0;i<opt_rate.length;i++) {
+		WIN_RESULTS.document.writeln("<td>"+ opt_rate[i].toFixed(2)+"</td><td>"+ opt_rate[i].toFixed(2) +"</td>");
+	}
+	WIN_RESULTS.document.writeln("<td>0.00</td>");
+	WIN_RESULTS.document.writeln("</tr></table><br>");
+	WIN_RESULTS.document.close();
+}
 
 function OutputResults_OS() {
 	var result;
@@ -585,11 +589,25 @@ function OutputResults_OS() {
 	var opt_rate = new Array();
 	opt_binsize = SSOS(spike_time);
 	EstimateRate(spike_time, opt_binsize[1], opt_rate);
+
+	//save as csv
+	var filemessage = "X-AXIS,Y-AXIS\\n";
+	filemessage += onset.toFixed(2) + ",0\\n";
+	for (var i = 0; i < opt_rate.length; i++) {
+		filemessage += (onset + i * opt_binsize[1]).toFixed(2) + "," + opt_rate[i].toFixed(2) + "\\n";
+		filemessage += (onset + (i + 1) * opt_binsize[1]).toFixed(2) + "," + opt_rate[i].toFixed(2) + "\\n";
+	}
+	filemessage += (onset + opt_rate.length * opt_binsize[1]).toFixed(2) + ",0\\n";
+
+	
 	WIN_RESULTS = window.open();
 	WIN_RESULTS.document.open();
 	WIN_RESULTS.document.writeln("<title>Data Sheet of the Optimized Histogram</title>");
 	WIN_RESULTS.document.writeln("<h2>Histgram: Non-Poissonian optimization</h2>");
 	WIN_RESULTS.document.writeln("Optimal binsize: <b>"+opt_binsize[1].toFixed(2)+"</b><br>Lv: <b>" + lv.toFixed(2) + "</b> (" + np + " firing)<br><br>");
+
+	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage)); 
+
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
 	WIN_RESULTS.document.writeln("<td>0.00</td>");
 	for (var i=0;i<opt_rate.length;i++) {
