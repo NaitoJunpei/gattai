@@ -571,7 +571,7 @@ function OutputResults_SS() {
 	for (var i=0;i<opt_rate.length;i++) {
 		WIN_RESULTS.document.writeln("<td>" + (onset + i * opt_binsize[0]).toFixed(2) + "</td><td>" + (onset + (i + 1) * opt_binsize[0]).toFixed(2) + "</td>");
 	}
-	WIN_RESULTS.document.writeln("<td>" + (onset + (opt_rate.length-1) * opt_binsize[0]).toFixed(2) + "</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
+	WIN_RESULTS.document.writeln("<td>" + (onset + opt_rate.length * opt_binsize[0]).toFixed(2) + "</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
 	WIN_RESULTS.document.writeln("<td>0.00</td>");
 	for (var i=0;i<opt_rate.length;i++) {
 		WIN_RESULTS.document.writeln("<td>"+ opt_rate[i].toFixed(2)+"</td><td>"+ opt_rate[i].toFixed(2) +"</td>");
@@ -613,7 +613,7 @@ function OutputResults_OS() {
 	for (var i=0;i<opt_rate.length;i++) {
 		WIN_RESULTS.document.writeln("<td>" + (onset + i * opt_binsize[1]).toFixed(2) + "</td><td>" + (onset + (i + 1) * opt_binsize[1]).toFixed(2) + "</td>");
 	}
-	WIN_RESULTS.document.writeln("<td>" + (onset + (opt_rate.length-1) * opt_binsize[1]).toFixed(2) + "</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
+	WIN_RESULTS.document.writeln("<td>" + (onset + opt_rate.length * opt_binsize[1]).toFixed(2) + "</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
 	WIN_RESULTS.document.writeln("<td>0.00</td>");
 	for (var i=0;i<opt_rate.length;i++) {
 		WIN_RESULTS.document.writeln("<td>"+ opt_rate[i].toFixed(2)+"</td><td>"+ opt_rate[i].toFixed(2) +"</td>");
@@ -762,7 +762,7 @@ function OutputResults_Bayes(){
 	for (var i = 0; i < spike_time.length - 1; i++) {
 		filemessage += ((spike_time[i] + spike_time[i + 1]) / 2).toFixed(3) + "," + kalman_data[0][i].toFixed(3) + "\\n";
 	}
-	filemessage += ((spike_time[spike_time.length - 2] + spike_time[spike_time.length - 1]) / 2).toFixed(3) + ",0\\n" 
+	filemessage += ((spike_time[spike_time.length - 2] + spike_time[spike_time.length - 1]) / 2).toFixed(3) + ",0\\n";
 
 	WIN_RESULTS = window.open();
 	WIN_RESULTS.document.open();
@@ -773,14 +773,13 @@ function OutputResults_Bayes(){
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
-	for (var i=0;i<spike_time.length;i++) {
-		WIN_RESULTS.document.writeln("<td>"+spike_time[i].toFixed(3)+"</td>");
+	for (var i=0;i<spike_time.length - 1;i++) {
+		WIN_RESULTS.document.writeln("<td>"+((spike_time[i] + spike_time[i + 1]) / 2).toFixed(3)+"</td>");
 	}
 	WIN_RESULTS.document.writeln("</tr><tr align=center><td width=150> Y-AXIS (density) </td>");
 	for (var i=0;i<spike_time.length-1;i++) {
 		WIN_RESULTS.document.writeln("<td>"+kalman_data[0][i].toFixed(3)+"</td>");
 	}
-	WIN_RESULTS.document.writeln("<td>"+kalman_data[0][spike_time.length-2].toFixed(3)+"</td>");
 	WIN_RESULTS.document.writeln("</tr></table><br>");
 	WIN_RESULTS.document.close();
 }
