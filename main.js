@@ -404,8 +404,8 @@ function DrawGraph_HMM(spike_time){
 	
 	var x,y,maxy;
 	var opty;
-	var opt = ((offset-onset)/(spike_time.length-1));
-	opty = get_hmm_ratefunc(spike_time, opt);	//描画の細かさ0.05 ?
+	var opt = ((offset-onset)/(spike_time.length-1)) * 5;	// step width = ISI * 5
+	opty = get_hmm_ratefunc(spike_time, opt);
 	for(var i=0; i<opty.length; i++){
 		if(i==0 || maxy<opty[i][1]) maxy=opty[i][1];
 	}
