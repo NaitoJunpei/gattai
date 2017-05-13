@@ -135,9 +135,10 @@ function Main() {
   time_old[1] = new Date().getTime();
   DrawGraph_SSOS(spike_time);			// 旧法新法
   time_old[3] = new Date().getTime();
-  DrawGraph_Kernel(spike_time);		// カーネル法
+  var kernel_opty = new Array();
+  DrawGraph_Kernel(spike_time, kernel_opty);		// カーネル法
   time_old[4] = new Date().getTime();
-  DrawGraph_Kernel2(spike_time);	// カーネル法(折り返し)
+  DrawGraph_Kernel2(spike_time, kernel_opty);	// カーネル法(折り返し)
   time_old[5] = new Date().getTime();
   //DrawGraph_BayesNP(spike_time);	// ノンポアソンベイズ推定
   //time_old[5] = new Date().getTime();
@@ -350,7 +351,7 @@ function DrawGraph_SSOS(spike_time){
 }
 
 
-function DrawGraph_Kernel(spike_time){
+function DrawGraph_Kernel(spike_time, kernel_opty){
 	var wrap = d3.select('#graph_Kernel');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
@@ -360,6 +361,10 @@ function DrawGraph_Kernel(spike_time){
 	var opt = Kernel(spike_time);
 	var opty = new Array();
 	var maxy = kern(spike_time, opt, opty);
+
+	for (var i = 0; i < opty.length; i++) {
+		kernel_opty[i] = opty[i];
+	}
 
 	var xy = new Array();
 	for (var i = 0;i<res_graph;i++) {
@@ -375,7 +380,7 @@ function DrawGraph_Kernel(spike_time){
 	document.getElementById("optimal_Kernel").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
 }
 
-function DrawGraph_Kernel2(spike_time){
+function DrawGraph_Kernel2(spike_time, kernel_opty){
 	var wrap = d3.select('#graph_Kernel2');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
@@ -384,7 +389,7 @@ function DrawGraph_Kernel2(spike_time){
 	var maxy;
 	var opt = Kernel(spike_time);
 	var opty = new Array();
-	var maxy = kern2(spike_time, opt, opty);
+	var maxy = kern2(spike_time, opt, opty, kernel_opty);
 
 	var xy = new Array();
 	for (var i = 0;i<res_graph;i++) {
@@ -479,7 +484,7 @@ function kern(spike_time, width, y) {
 	}
 	return maxy;
 }
-function kern2(spike_time, width, y) {
+function kern2(spike_time, width, y, kernel_opty) {
 	var x = new Array(res_graph)
 	x[0] = onset;
 	for (var i=0; i<res_graph; i++) {
@@ -489,8 +494,20 @@ function kern2(spike_time, width, y) {
 	var gauss;
 	for (var i=0; i<res_graph; i++) {
 		y[i] = 0;
+		y[i] += kernel_opty[i];
 		for (var j in spike_time) {
-			if(x[i]-5*width>=onset && x[i]+5*width<=offset){
+			if (x[i] - 5*width<onset) {
+				if (-(x[i]-5*width)+2*onset > spike_time[j]){
+					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(onset-(spike_time[j]-onset)))*(x[i]-(onset-(spike_time[j]-onset)))/2/width/width);
+					y[i] = y[i] + gauss / spike_time.length;
+				}
+			}else if(x[i]+5*width>offset){
+				if(-(x[i]+5*width)+2*offset > spike_time[i]){
+					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(offset+(offset-spike_time[j])))*(x[i]-(offset+(offset-spike_time[j])))/2/width/width);
+					y[i] = y[i] + gauss / spike_time.length;
+				}
+			}
+			/*if(x[i]-5*width>=onset && x[i]+5*width<=offset){
 				if((x[i]-5*width <= spike_time[j]) && (spike_time[j] <= x[i]+5*width)){
 					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
 					y[i] = y[i] + gauss / spike_time.length;
@@ -512,7 +529,7 @@ function kern2(spike_time, width, y) {
 					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(offset+(offset-spike_time[j])))*(x[i]-(offset+(offset-spike_time[j])))/2/width/width);
 					y[i] = y[i] + gauss / spike_time.length;
 				}
-			}
+			}*/
 		}
 		if(maxy<y[i]) maxy=y[i];
 	}
