@@ -566,18 +566,14 @@ function OutputResults_SS() {
 
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 
-	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
-	WIN_RESULTS.document.writeln("<td>0.00</td>");
+	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density)</td>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" + onset.toFixed(2) + "</td><td>0.00</td></tr>");
 	for (var i=0;i<opt_rate.length;i++) {
-		WIN_RESULTS.document.writeln("<td>" + (onset + i * opt_binsize[0]).toFixed(2) + "</td><td>" + (onset + (i + 1) * opt_binsize[0]).toFixed(2) + "</td>");
+		WIN_RESULTS.document.writeln("<tr align=right><td>" + (onset + i * opt_binsize[0]).toFixed(2) + "</td><td>" + opt_rate[i].toFixed(2) + "</td></tr>");
+		WIN_RESULTS.document.writeln("<tr align=right><td>" + (onset + (i + 1) * opt_binsize[0]).toFixed(2) + "</td><td>" + opt_rate[i].toFixed(2) + "</td></tr>");
 	}
-	WIN_RESULTS.document.writeln("<td>" + (onset + opt_rate.length * opt_binsize[0]).toFixed(2) + "</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
-	WIN_RESULTS.document.writeln("<td>0.00</td>");
-	for (var i=0;i<opt_rate.length;i++) {
-		WIN_RESULTS.document.writeln("<td>"+ opt_rate[i].toFixed(2)+"</td><td>"+ opt_rate[i].toFixed(2) +"</td>");
-	}
-	WIN_RESULTS.document.writeln("<td>0.00</td>");
-	WIN_RESULTS.document.writeln("</tr></table><br>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" + (onset + opt_rate.length * opt_binsize[0]).toFixed(2) + "</td><td>0.00</td></tr>");
+	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
 
@@ -608,18 +604,14 @@ function OutputResults_OS() {
 
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage)); 
 
-	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
-	WIN_RESULTS.document.writeln("<td>0.00</td>");
+	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" + onset.toFixed(2) + "</td><td>0.00</td></tr>");
 	for (var i=0;i<opt_rate.length;i++) {
-		WIN_RESULTS.document.writeln("<td>" + (onset + i * opt_binsize[1]).toFixed(2) + "</td><td>" + (onset + (i + 1) * opt_binsize[1]).toFixed(2) + "</td>");
+		WIN_RESULTS.document.writeln("<tr align=right><td>" + (onset + i * opt_binsize[1]).toFixed(2) + "</td><td>" + opt_rate[i].toFixed(2) + "</td></tr>");
+		WIN_RESULTS.document.writeln("<tr align=right><td>" + (onset + (i + 1) * opt_binsize[1]).toFixed(2) + "</td><td>" + opt_rate[i].toFixed(2) + "</td></tr>");
 	}
-	WIN_RESULTS.document.writeln("<td>" + (onset + opt_rate.length * opt_binsize[1]).toFixed(2) + "</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
-	WIN_RESULTS.document.writeln("<td>0.00</td>");
-	for (var i=0;i<opt_rate.length;i++) {
-		WIN_RESULTS.document.writeln("<td>"+ opt_rate[i].toFixed(2)+"</td><td>"+ opt_rate[i].toFixed(2) +"</td>");
-	}
-	WIN_RESULTS.document.writeln("<td>0.00</td>");
-	WIN_RESULTS.document.writeln("</tr></table><br>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" + (onset + opt_rate.length * opt_binsize[1]).toFixed(2) + "</td><td>0.00</td></tr>");
+	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
 
@@ -647,15 +639,11 @@ function OutputResults_Kernel() {
 
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
-	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
+	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
 	for (var i=0;i<spike_time.length;i++) {
-		WIN_RESULTS.document.writeln("<td>"+spike_time[i].toFixed(3)+"</td>");
+		WIN_RESULTS.document.writeln("<tr align=right><td>"+spike_time[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
 	}
-	WIN_RESULTS.document.writeln("</tr><tr align=center><td width=150> Y-AXIS (density) </td>");
-	for (var i=0;i<spike_time.length;i++) {
-		WIN_RESULTS.document.writeln("<td>"+opty[i].toFixed(3)+"</td>");
-	}
-	WIN_RESULTS.document.writeln("</tr></table><br>");
+	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
 
@@ -682,15 +670,11 @@ function OutputResults_Kernel2() {
 	
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
-	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
+	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td> Y-AXIS (density) </td></tr>");
 	for (var i=0;i<spike_time.length;i++) {
-		WIN_RESULTS.document.writeln("<td>"+spike_time[i].toFixed(3)+"</td>");
+		WIN_RESULTS.document.writeln("<tr align=right><td>"+spike_time[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
 	}
-	WIN_RESULTS.document.writeln("</tr><tr align=center><td width=150> Y-AXIS (density) </td>");
-	for (var i=0;i<spike_time.length;i++) {
-		WIN_RESULTS.document.writeln("<td>"+opty[i].toFixed(3)+"</td>");
-	}
-	WIN_RESULTS.document.writeln("</tr></table><br>");
+	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
 
@@ -725,26 +709,20 @@ function OutputResults_HMM() {
 
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 
-	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
-	WIN_RESULTS.document.writeln("<td>0.00</td><td>"+time.toFixed(3)+"</td>");
+	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>0.000</td><td>0.000</td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" +time.toFixed(3)+"</td><td>" + opty[0][1].toFixed(3) + "</td></tr>");
 	time+=opt;
 	for (var i=1;i<opty.length;i++) {
 		if(opty[i][1]!=opty[i-1][1]){
-			WIN_RESULTS.document.writeln("<td>"+time.toFixed(2)+"</td>");
-			WIN_RESULTS.document.writeln("<td>"+time.toFixed(2)+"</td>");
+			WIN_RESULTS.document.writeln("<tr align=right><td>"+time.toFixed(2)+"</td><td>" + opty[i-1][1].toFixed(3)+"</td></tr>");
+			WIN_RESULTS.document.writeln("<tr align=right><td>"+time.toFixed(2)+"</td><td>" + opty[i][1].toFixed(3) + "</td></tr>");
 		}
 		time+=opt;
 	}
-	WIN_RESULTS.document.writeln("<td>"+ time.toFixed(2) +"</td><td>"+ time.toFixed(2) +"</td></tr><tr align=center><td width=150> Y-AXIS (density) </td>");
-	WIN_RESULTS.document.writeln("<td>0.000</td><td>"+opty[0][1].toFixed(3)+"</td>");
-	for (var i=1;i<opty.length;i++) {
-		if(opty[i][1]!=opty[i-1][1]){
-			WIN_RESULTS.document.writeln("<td>"+opty[i-1][1].toFixed(3)+"</td>");
-			WIN_RESULTS.document.writeln("<td>"+opty[i][1].toFixed(3)+"</td>");
-		}
-	}
-	WIN_RESULTS.document.writeln("<td>" + opty[opty.length-1][1].toFixed(3) + "</td><td>0.000</td></tr></table><br>");
-	WIN_RESULTS.document.writeln("</tr></table><br>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+ time.toFixed(2) +"</td><td>" + opty[opty.length-1][1].toFixed(3) + "</td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+ time.toFixed(2) +"</td><td>0.000</td></tr>");
+	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.writeln("</blockquote>");
 	WIN_RESULTS.document.close();
 }
@@ -772,14 +750,10 @@ function OutputResults_Bayes(){
 
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
-	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td>");
+	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
 	for (var i=0;i<spike_time.length - 1;i++) {
-		WIN_RESULTS.document.writeln("<td>"+((spike_time[i] + spike_time[i + 1]) / 2).toFixed(3)+"</td>");
+		WIN_RESULTS.document.writeln("<tr align=right><td>"+((spike_time[i] + spike_time[i + 1]) / 2).toFixed(3)+"</td><td>" + kalman_data[0][i].toFixed(3) + "</td></tr>");
 	}
-	WIN_RESULTS.document.writeln("</tr><tr align=center><td width=150> Y-AXIS (density) </td>");
-	for (var i=0;i<spike_time.length-1;i++) {
-		WIN_RESULTS.document.writeln("<td>"+kalman_data[0][i].toFixed(3)+"</td>");
-	}
-	WIN_RESULTS.document.writeln("</tr></table><br>");
+	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
