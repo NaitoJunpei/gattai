@@ -402,7 +402,7 @@ function DrawGraph_Kernel2(spike_time, kernel_opty){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy) ).attr("fill","#FFDEAD").attr("stroke","#DFBE8D");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel2()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
+	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel2([" + kernel_opty.join(",") + "])\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
 }
 
 function DrawGraph_HMM(spike_time){
@@ -664,12 +664,12 @@ function OutputResults_Kernel() {
 	WIN_RESULTS.document.close();
 }
 
-function OutputResults_Kernel2() {
+function OutputResults_Kernel2(kernel_opty) {
 	var spike_time = new Array();
 	PostData(spike_time);
 	var opt = Kernel(spike_time);
 	var opty = new Array();
-	kern2(spike_time, opt, opty);
+	kern2(spike_time, opt, opty, kernel_opty);
 
 	//save as csv
 	var filemessage = "X-AXIS,Y-AXIS\\n";
