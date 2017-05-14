@@ -539,7 +539,6 @@ function kern2(spike_time, width, y) {
 		y[i] += addNumber;
 		if(maxy<y[i]) maxy=y[i];
 	}
-	console.log(y);
 	return maxy;
 }
 
@@ -661,7 +660,6 @@ function OutputResults_Kernel() {
 	//save as csv
 	var filemessage = "X-AXIS,Y-AXIS\\n";
 	filemessage += xaxis[0].toFixed(3) + ",0\\n";
-	console.log(xaxis.length);
 	for (var i = 0; i < xaxis.length; i++) {
 		filemessage += xaxis[i].toFixed(3) + "," + opty[i].toFixed(3) + "\\n";
 	}
@@ -696,7 +694,6 @@ function OutputResults_Kernel2() {
 	var filemessage = "X-AXIS,Y-AXIS\\n";
 	filemessage += xaxis[0].toFixed(3) + ",0\\n";
 	for (var i = 0; i < xaxis.length; i++) {
-		console.log(i, opty[i]);
 		filemessage += xaxis[i].toFixed(3) + "," + opty[i].toFixed(3) + "\\n";
 	}
 	filemessage += spike_time[spike_time.length - 1] + ",0\\n";
