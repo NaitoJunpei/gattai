@@ -136,6 +136,7 @@ function Main() {
   time_old[1] = new Date().getTime();
   DrawGraph_SSOS(spike_time);			// 旧法新法
   time_old[3] = new Date().getTime();
+  kernel_opty = new Array();
   DrawGraph_Kernel(spike_time);		// カーネル法
   time_old[4] = new Date().getTime();
   DrawGraph_Kernel2(spike_time);	// カーネル法(折り返し)
@@ -484,6 +485,7 @@ function kern(spike_time, width, y) {
 	}
 	return maxy;
 }
+
 function kern2(spike_time, width, y) {
 	var x = new Array(res_graph)
 	x[0] = onset;
@@ -492,19 +494,22 @@ function kern2(spike_time, width, y) {
 	}
 	var maxy=0;
 	var gauss;
+	var addNumber = 0;
+
 	for (var i=0; i<res_graph; i++) {
+		addNumber = 0;
 		y[i] = 0;
-		y[i] += kernel_opty[i];
+		addNumber += kernel_opty[i];
 		for (var j in spike_time) {
 			if (x[i] - 5*width<onset) {
 				if (-(x[i]-5*width)+2*onset > spike_time[j]){
 					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(onset-(spike_time[j]-onset)))*(x[i]-(onset-(spike_time[j]-onset)))/2/width/width);
-					y[i] = y[i] + gauss / spike_time.length;
+					addNumber = addNumber + gauss / spike_time.length;
 				}
 			}else if(x[i]+5*width>offset){
 				if(-(x[i]+5*width)+2*offset > spike_time[i]){
 					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(offset+(offset-spike_time[j])))*(x[i]-(offset+(offset-spike_time[j])))/2/width/width);
-					y[i] = y[i] + gauss / spike_time.length;
+					addNumber = addNumber + gauss / spike_time.length;
 				}
 			}
 			/*if(x[i]-5*width>=onset && x[i]+5*width<=offset){
@@ -531,8 +536,10 @@ function kern2(spike_time, width, y) {
 				}
 			}*/
 		}
+		y[i] += addNumber;
 		if(maxy<y[i]) maxy=y[i];
 	}
+	console.log(y);
 	return maxy;
 }
 
@@ -632,20 +639,33 @@ function OutputResults_OS() {
 	WIN_RESULTS.document.close();
 }
 
+function xaxisForKernel(spike_time) {
+	var x = new Array(res_graph);
+	var data_max = spike_time[spike_time.length - 1];
+	var data_min = spike_time[0];
+	x[0] = data_min;
+	for (var i = 0; i < res_graph - 1; i++) {
+		x[i + 1] = x[i] + (data_max - data_min) / (res_graph - 1);
+	}
+	return x;
+}
+
 function OutputResults_Kernel() {
 	var spike_time = new Array();
 	PostData(spike_time);
 	var opt = Kernel(spike_time);
 	var opty = new Array();
 	kern(spike_time, opt, opty);
+	var xaxis = xaxisForKernel(spike_time);
 
 	//save as csv
 	var filemessage = "X-AXIS,Y-AXIS\\n";
-	filemessage += spike_time[0].toFixed(3) + ",0\\n";
-	for (var i = 0; i < spike_time.length; i++) {
-		filemessage += spike_time[i].toFixed(3) + "," + opty[i].toFixed(3) + "\\n";
+	filemessage += xaxis[0].toFixed(3) + ",0\\n";
+	console.log(xaxis.length);
+	for (var i = 0; i < xaxis.length; i++) {
+		filemessage += xaxis[i].toFixed(3) + "," + opty[i].toFixed(3) + "\\n";
 	}
-	filemessage += spike_time[spike_time.length - 1].toFixed(3) + ",0\\n";
+	filemessage += xaxis[xaxis.length - 1].toFixed(3) + ",0\\n";
 
 	
 	WIN_RESULTS = window.open();
@@ -657,8 +677,8 @@ function OutputResults_Kernel() {
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
-	for (var i=0;i<spike_time.length;i++) {
-		WIN_RESULTS.document.writeln("<tr align=right><td>"+spike_time[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
+	for (var i=0;i<xaxis.length;i++) {
+		WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
 	}
 	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
@@ -670,12 +690,14 @@ function OutputResults_Kernel2() {
 	var opt = Kernel(spike_time);
 	var opty = new Array();
 	kern2(spike_time, opt, opty);
+	var xaxis = xaxisForKernel(spike_time);
 
 	//save as csv
 	var filemessage = "X-AXIS,Y-AXIS\\n";
-	filemessage += spike_time[0].toFixed(3) + ",0\\n";
-	for (var i = 0; i < spike_time.length; i++) {
-		filemessage += spike_time[i].toFixed(3) + "," + opty[i].toFixed(3) + "\\n";
+	filemessage += xaxis[0].toFixed(3) + ",0\\n";
+	for (var i = 0; i < xaxis.length; i++) {
+		console.log(i, opty[i]);
+		filemessage += xaxis[i].toFixed(3) + "," + opty[i].toFixed(3) + "\\n";
 	}
 	filemessage += spike_time[spike_time.length - 1] + ",0\\n";
 	
@@ -688,8 +710,8 @@ function OutputResults_Kernel2() {
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td> Y-AXIS (density) </td></tr>");
-	for (var i=0;i<spike_time.length;i++) {
-		WIN_RESULTS.document.writeln("<tr align=right><td>"+spike_time[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
+	for (var i=0;i<xaxis.length;i++) {
+		WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
 	}
 	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
