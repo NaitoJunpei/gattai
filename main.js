@@ -11,6 +11,7 @@ var spike_num;
 var onset, offset;
 var lv, np;
 
+var kernel_opty = new Array();
 
 function LoadStart() {
   return new Promise(function(Main){
@@ -135,10 +136,9 @@ function Main() {
   time_old[1] = new Date().getTime();
   DrawGraph_SSOS(spike_time);			// 旧法新法
   time_old[3] = new Date().getTime();
-  var kernel_opty = new Array();
-  DrawGraph_Kernel(spike_time, kernel_opty);		// カーネル法
+  DrawGraph_Kernel(spike_time);		// カーネル法
   time_old[4] = new Date().getTime();
-  DrawGraph_Kernel2(spike_time, kernel_opty);	// カーネル法(折り返し)
+  DrawGraph_Kernel2(spike_time);	// カーネル法(折り返し)
   time_old[5] = new Date().getTime();
   //DrawGraph_BayesNP(spike_time);	// ノンポアソンベイズ推定
   //time_old[5] = new Date().getTime();
@@ -351,7 +351,7 @@ function DrawGraph_SSOS(spike_time){
 }
 
 
-function DrawGraph_Kernel(spike_time, kernel_opty){
+function DrawGraph_Kernel(spike_time){
 	var wrap = d3.select('#graph_Kernel');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
@@ -380,7 +380,7 @@ function DrawGraph_Kernel(spike_time, kernel_opty){
 	document.getElementById("optimal_Kernel").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
 }
 
-function DrawGraph_Kernel2(spike_time, kernel_opty){
+function DrawGraph_Kernel2(spike_time){
 	var wrap = d3.select('#graph_Kernel2');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
@@ -389,7 +389,7 @@ function DrawGraph_Kernel2(spike_time, kernel_opty){
 	var maxy;
 	var opt = Kernel(spike_time);
 	var opty = new Array();
-	var maxy = kern2(spike_time, opt, opty, kernel_opty);
+	var maxy = kern2(spike_time, opt, opty);
 
 	var xy = new Array();
 	for (var i = 0;i<res_graph;i++) {
@@ -402,7 +402,7 @@ function DrawGraph_Kernel2(spike_time, kernel_opty){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy) ).attr("fill","#FFDEAD").attr("stroke","#DFBE8D");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel2([" + kernel_opty.join(",") + "])\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
+	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel2()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
 }
 
 function DrawGraph_HMM(spike_time){
@@ -484,7 +484,7 @@ function kern(spike_time, width, y) {
 	}
 	return maxy;
 }
-function kern2(spike_time, width, y, kernel_opty) {
+function kern2(spike_time, width, y) {
 	var x = new Array(res_graph)
 	x[0] = onset;
 	for (var i=0; i<res_graph; i++) {
@@ -664,12 +664,12 @@ function OutputResults_Kernel() {
 	WIN_RESULTS.document.close();
 }
 
-function OutputResults_Kernel2(kernel_opty) {
+function OutputResults_Kernel2() {
 	var spike_time = new Array();
 	PostData(spike_time);
 	var opt = Kernel(spike_time);
 	var opty = new Array();
-	kern2(spike_time, opt, opty, kernel_opty);
+	kern2(spike_time, opt, opty);
 
 	//save as csv
 	var filemessage = "X-AXIS,Y-AXIS\\n";
