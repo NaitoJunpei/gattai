@@ -787,9 +787,11 @@ function OutputResults_Bayes(){
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+((spike_time[0] + spike_time[1]) / 2).toFixed(3)+"</td><td>0.00</td></tr>");
 	for (var i=0;i<spike_time.length - 1;i++) {
 		WIN_RESULTS.document.writeln("<tr align=right><td>"+((spike_time[i] + spike_time[i + 1]) / 2).toFixed(3)+"</td><td>" + kalman_data[0][i].toFixed(3) + "</td></tr>");
 	}
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+((spike_time[spike_time.length - 2] + spike_time[spike_time.length - 1]) / 2).toFixed(3) + "</td><td>0.00</td></tr>");
 	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
