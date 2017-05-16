@@ -11,8 +11,6 @@ var spike_num;
 var onset, offset;
 var lv, np;
 
-var kernel_opty = new Array();
-
 function LoadStart() {
   return new Promise(function(Main){
 	document.getElementById("loading").style.visibility="visible";
@@ -136,10 +134,7 @@ function Main() {
   time_old[1] = new Date().getTime();
   DrawGraph_SSOS(spike_time);			// 旧法新法
   time_old[3] = new Date().getTime();
-  kernel_opty = new Array();
-  DrawGraph_Kernel(spike_time);		// カーネル法
-  time_old[4] = new Date().getTime();
-  DrawGraph_Kernel2(spike_time);	// カーネル法(折り返し)
+  DrawGraph_Kernel12(spike_time);	// カーネル法 & カーネル法(折り返し)
   time_old[5] = new Date().getTime();
   //DrawGraph_BayesNP(spike_time);	// ノンポアソンベイズ推定
   //time_old[5] = new Date().getTime();
@@ -351,57 +346,49 @@ function DrawGraph_SSOS(spike_time){
 	document.getElementById("optimal_OS").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bin size = <font color=\"red\">" + opt[1].toFixed(2) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;Irregularity is estimated as Lv = <font color=\"red\">" + lv.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_OS()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
 }
 
-
-function DrawGraph_Kernel(spike_time){
+function DrawGraph_Kernel12(spike_time){
+	//	Kernel(C)
 	var wrap = d3.select('#graph_Kernel');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
 	var url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sskernel/kernel.html";
 	
-	var maxy;
 	var opt = Kernel(spike_time);
-	var opty = new Array();
-	var maxy = kern(spike_time, opt, opty);
+	var opty1 = new Array();
+	var opty2 = new Array();
+	var maxy = kern12(spike_time, opt, opty1, opty2);
 
-	for (var i = 0; i < opty.length; i++) {
-		kernel_opty[i] = opty[i];
-	}
-
-	var xy = new Array();
+	var xy1 = new Array();
 	for (var i = 0;i<res_graph;i++) {
-		xy[i] = [x_base + Math.round(i*width_graph/(res_graph-1)), height_graph - Math.round(height_graph*opty[i]/(1.2*maxy))];
+		xy1[i] = [x_base + Math.round(i*width_graph/(res_graph-1)), height_graph - Math.round(height_graph*opty1[i]/(1.2*maxy))];
 	}
-	xy.unshift([x_base, height_graph]);
-	xy.push([x_base+width_graph, height_graph]);
+	xy1.unshift([x_base, height_graph]);
+	xy1.push([x_base+width_graph, height_graph]);
 	var line = d3.svg.line()
 	      .x(function(d) {return d[0];})
 	      .y(function(d) {return d[1];});
-	svg.append("path").attr("d", line(xy) ).attr("fill","#F0E68C").attr("stroke","#D0C66C");
+	svg.append("path").attr("d", line(xy1) ).attr("fill","#F0E68C").attr("stroke","#D0C66C");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 	document.getElementById("optimal_Kernel").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
-}
-
-function DrawGraph_Kernel2(spike_time){
+	
+	time_old[4] = new Date().getTime();
+	
+	// Kernel2(D)
 	var wrap = d3.select('#graph_Kernel2');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html";
-	
-	var maxy;
-	var opt = Kernel(spike_time);
-	var opty = new Array();
-	var maxy = kern2(spike_time, opt, opty);
+	url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html";
 
-	var xy = new Array();
+	var xy2 = new Array();
 	for (var i = 0;i<res_graph;i++) {
-		xy[i] = [x_base + Math.round(i*width_graph/(res_graph-1)), height_graph - Math.round(height_graph*opty[i]/(1.2*maxy))];
+		xy2[i] = [x_base + Math.round(i*width_graph/(res_graph-1)), height_graph - Math.round(height_graph*opty2[i]/(1.2*maxy))];
 	}
-	xy.unshift([x_base, height_graph]);
-	xy.push([x_base+width_graph, height_graph]);
+	xy2.unshift([x_base, height_graph]);
+	xy2.push([x_base+width_graph, height_graph]);
 	var line = d3.svg.line()
 	      .x(function(d) {return d[0];})
 	      .y(function(d) {return d[1];});
-	svg.append("path").attr("d", line(xy) ).attr("fill","#FFDEAD").attr("stroke","#DFBE8D");
+	svg.append("path").attr("d", line(xy2) ).attr("fill","#FFDEAD").attr("stroke","#DFBE8D");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:568px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel2()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:690px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\">";
 }
@@ -452,6 +439,7 @@ function DrawGraph_Bayes(spike_time){
 	for (var i = 0;i<spike_time.length-1;i++) {
 		xy[i] = [x_base + width_graph*(spike_time[i]/2+spike_time[i+1]/2-spike_time[0])/(spike_time[spike_time.length-1]-spike_time[0]), height_graph - height_graph*kalman_data[0][i]/(1.2*maxy)];
 	}
+	xy.unshift([x_base, height_graph - height_graph*kalman_data[0][0]/(1.2*maxy)]);
 	xy.unshift([x_base, height_graph]);
 	xy.push([x_base+width_graph, height_graph - height_graph*kalman_data[0][spike_time.length-2]/(1.2*maxy)]);
 	xy.push([x_base+width_graph, height_graph]);
@@ -464,80 +452,41 @@ function DrawGraph_Bayes(spike_time){
 }
 
 
-
-function kern(spike_time, width, y) {
+function kern12(spike_time, width, y1, y2) {
 	var x = new Array(res_graph)
 	x[0] = onset;
-	for (var i=0; i<res_graph; i++) {
-		x[i+1] = x[i] + (offset-onset)/(res_graph-1); 
-	}
-	var maxy=0;
-	var gauss;
-	for (var i=0; i<res_graph; i++) {
-		y[i] = 0;
-		for (var j in spike_time) {
-			if((x[i]-5*width <= spike_time[j]) && (spike_time[j] <= x[i]+5*width)){
-				gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
-				y[i] = y[i] + gauss / spike_time.length;
-			}
-		}
-		if(maxy<y[i]) maxy=y[i];
-	}
-	return maxy;
-}
-
-function kern2(spike_time, width, y) {
-	var x = new Array(res_graph)
-	x[0] = onset;
-	for (var i=0; i<res_graph; i++) {
-		x[i+1] = x[i] + (offset-onset)/(res_graph-1); 
-	}
+	
 	var maxy=0;
 	var gauss;
 	var addNumber = 0;
-
+	
+	for (var i=0; i<res_graph; i++) {
+		x[i+1] = x[i] + (offset-onset)/(res_graph-1); 
+	}
+	var maxy=0;
+	var gauss;
 	for (var i=0; i<res_graph; i++) {
 		addNumber = 0;
-		y[i] = 0;
-		addNumber += kernel_opty[i];
+		y1[i] = 0;
 		for (var j in spike_time) {
-			if (x[i] - 5*width<onset) {
+			if((x[i]-5*width <= spike_time[j]) && (spike_time[j] <= x[i]+5*width)){
+				gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
+				y1[i] = y1[i] + gauss / spike_time.length;
+			}
+			if (x[i]-5*width < onset) {
 				if (-(x[i]-5*width)+2*onset > spike_time[j]){
 					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(onset-(spike_time[j]-onset)))*(x[i]-(onset-(spike_time[j]-onset)))/2/width/width);
 					addNumber = addNumber + gauss / spike_time.length;
 				}
-			}else if(x[i]+5*width>offset){
+			}else if(x[i]+5*width > offset){
 				if(-(x[i]+5*width)+2*offset > spike_time[i]){
 					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(offset+(offset-spike_time[j])))*(x[i]-(offset+(offset-spike_time[j])))/2/width/width);
 					addNumber = addNumber + gauss / spike_time.length;
 				}
 			}
-			/*if(x[i]-5*width>=onset && x[i]+5*width<=offset){
-				if((x[i]-5*width <= spike_time[j]) && (spike_time[j] <= x[i]+5*width)){
-					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
-					y[i] = y[i] + gauss / spike_time.length;
-				}
-			}else if(x[i]-5*width<onset){
-				if((-(x[i]-5*width)+onset <= spike_time[j]) && (spike_time[j] <= x[i]+5*width)){
-					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
-					y[i] = y[i] + gauss / spike_time.length;
-				}else if(-(x[i]-5*width)+onset > spike_time[j]){
-					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
-					y[i] = y[i] + gauss / spike_time.length;
-					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(onset-(spike_time[j]-onset)))*(x[i]-(onset-(spike_time[j]-onset)))/2/width/width);
-					y[i] = y[i] + gauss / spike_time.length;
-				}
-			}else if(x[i]+5*width>offset){
-				if((x[i]-5*width <= spike_time[j]) && (spike_time[j] <= x[i]+5*width)){
-					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
-					y[i] = y[i] + gauss / spike_time.length;
-					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(offset+(offset-spike_time[j])))*(x[i]-(offset+(offset-spike_time[j])))/2/width/width);
-					y[i] = y[i] + gauss / spike_time.length;
-				}
-			}*/
 		}
-		y[i] += addNumber;
-		if(maxy<y[i]) maxy=y[i];
+		y2[i] = y1[i] + addNumber;
+		if(maxy<y2[i]) maxy=y2[i];
 	}
 	return maxy;
 }
