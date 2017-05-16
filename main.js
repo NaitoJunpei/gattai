@@ -439,6 +439,7 @@ function DrawGraph_Bayes(spike_time){
 	for (var i = 0;i<spike_time.length-1;i++) {
 		xy[i] = [x_base + width_graph*(spike_time[i]/2+spike_time[i+1]/2-spike_time[0])/(spike_time[spike_time.length-1]-spike_time[0]), height_graph - height_graph*kalman_data[0][i]/(1.2*maxy)];
 	}
+	xy.unshift([x_base, height_graph - height_graph*kalman_data[0][0]/(1.2*maxy)]);
 	xy.unshift([x_base, height_graph]);
 	xy.push([x_base+width_graph, height_graph - height_graph*kalman_data[0][spike_time.length-2]/(1.2*maxy)]);
 	xy.push([x_base+width_graph, height_graph]);
