@@ -143,7 +143,7 @@ function Main() {
   DrawGraph_HMM(spike_time);		// 隠れマルコフモデル
   time_old[7] = new Date().getTime();
   
-  document.getElementById("time").innerHTML = "Spike Raster : " + (time_old[1]-time_old[0]) + " ms<br>(A) : " + (time_old[2]-time_old[1]) + " ms<br>(B) : " + (time_old[3]-time_old[2]) + " ms<br>(C) : " + (time_old[4]-time_old[3]) + " ms<br>(D) : " + (time_old[5]-time_old[4]) + " ms<br>(E) : " + (time_old[6]-time_old[5]) + " ms<br>(F) : " + (time_old[7]-time_old[6]) + " ms";
+  document.getElementById("time").innerHTML = "<font size='2pt' face='Arial'>Spike Raster : " + (time_old[1]-time_old[0]) + " ms<br>(A) : " + (time_old[2]-time_old[1]) + " ms<br>(B)-(A) : " + (time_old[3]-time_old[2]) + " ms<br>(C) : " + (time_old[4]-time_old[3]) + " ms<br>(D)-(C) : " + (time_old[5]-time_old[4]) + " ms<br>(E) : " + (time_old[6]-time_old[5]) + " ms<br>(F) : " + (time_old[7]-time_old[6]) + " ms</font>";
   
   //DrawGraph(spike_time, SS(spike_time), "SS");  // 旧法
   //DrawGraph(spike_time, OS(spike_time), "OS");  // 新法
