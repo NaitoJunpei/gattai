@@ -39,7 +39,7 @@
   </table>
   <br />
   
-  <form name="data"><font size="2pt" face="Arial"><font size="3"><strong>1. </strong></font>You can paste your data here, or &#160; <input type="button" style="font:10.5pt Arial; margin-left: 0;" value="replace it with another sample," onclick="RandomData();Main();" /> or &#160; <input type="file" id="selfile" style="display:none;" />
+  <form name="data"><font size="2pt" face="Arial"><font size="3"><strong>1. </strong></font>You can paste your data here, or &#160; <input type="button" style="font:10.5pt Arial;" value="replace it with another sample," onclick="RandomData();Main();" /> or &#160; <input type="file" id="selfile" style="display:none;" />
 <input type="button" value="upload your data." style="font:10.5pt Arial;" onclick="document.getElementById('selfile').click();" />
 
 <script>
@@ -66,7 +66,7 @@ obj1.addEventListener("change",function(evt){
 <br />
   <font size = "2pt">&nbsp;&nbsp;&nbsp;&nbsp;<textarea name="spikes" rows="3" cols="120" style="font-size:9.5pt"></textarea><br />
   <br />
-  </font><font size="3"><strong>2. </strong></font><input type="button" style="font:10.5pt Arial; margin-left: 0;" value="Estimate the firing rate." onclick="Main();" />
+  </font><font size="3"><strong>2. </strong></font><input type="button" style="font:10.5pt Arial;" value="Estimate the firing rate." onclick="Main();" />
 </font>
   <div id="loading" style="font-size:10pt; display:inline-block; visibility:hidden"><font size="2pt" face="Arial"><img src="loading.gif" />processing...</font></div>
   <font size="2pt" face="Arial"><br />
@@ -75,11 +75,11 @@ obj1.addEventListener("change",function(evt){
   <div id="graph_SS" width="800" height="60"></div>
   <div id="raster_SS" width="800" height="10"></div>
   <div class="buttons">
-    <INPUT type="button" value="data sheet" onclick="OutputResults_SS()" />
-    <INPUT type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sshist/hist.html'" />
-    <INPUT type="button" value="related site" onclick="location.href='http://176.32.89.45/~hideaki/res/histogram.html'" />
+    <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_SS()" />
+    <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sshist/hist.html'" />
+    <INPUT class="button" type="button" value="related site" onclick="location.href='http://176.32.89.45/~hideaki/res/histogram.html'" />
     <a href="./matlab/sshist.m" download="sshist.m">
-      <INPUT type="button" value="matlab" /></a>
+      <INPUT class="button" type="button" value="matlab" /></a>
   </div>
   <div id="optimal_SS" style="font-size:10pt; margin-bottom:6px"></div>
 
@@ -92,10 +92,10 @@ obj1.addEventListener("change",function(evt){
   <div>
     <div id="optimal_OS" class="info"></div>
     <div class="buttons">
-      <INPUT type="button" value="data sheet" onclick="OutputResults_OS()">
-      <INPUT type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/oshist/hist.html'">
+      <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_OS()">
+      <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/oshist/hist.html'">
       <a href="./matlab/hist_np.m" download="hist_np.m">
-	<INPUT type="button" value="matlab"></a>
+	<INPUT class="button" type="button" value="matlab"></a>
       </div></div>
 
       
@@ -106,31 +106,54 @@ obj1.addEventListener("change",function(evt){
   <div>
     <div id="optimal_Kernel" class="info"></div>
     <div class="buttons">
-      <INPUT type="button" value="data sheet" onclick="OutputResults_Kernel()">
-      <INPUT type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sskernel/kernel.html'">
+      <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Kernel()" />
+      <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sskernel/kernel.html'" />
       <a href="./matlab/sskernel.m" download="sskernel.m">
-	<INPUT type="button" value="matlab"></a>
-      </div>
-    </div>
+	<INPUT class="button" type="button" value="matlab" /></a>
+    </div></div>
+
+  
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(D) Kernel density estimation: L2 risk minimization,
   with <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html" target="_blank">[reflection boundary]</a>.<br />
   </font></font>
   <div id="graph_Kernel2" width="800" height="60"></div>
   <div id="raster_Kernel2" width="800" height="10"></div>
-  <div id="optimal_Kernel2" style="font-size:10pt; margin-bottom:6px"></div>
+  <div>
+    <div id="optimal_Kernel2" class="info"></div>
+    <div class="buttons">
+      <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Kernel2()" />
+      <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html'" />
+      <a href='' download="">
+	<INPUT class="button" type="button" value="matlab" /></a>
+  </div></div>
+
+
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(E) Bayesian rate estimation <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2005JPhysA.pdf" target="_blank">[Reference 4]</a> <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2009NeCo.pdf" target="_blank">[Reference 5]</a>. </font></font><a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssNeCo09/page_SULAB2.html" target="_blank"><font size="2pt" face="Arial"><font size="2pt"><font face="Arial"><font size="2pt">(Estimating rate and irregularity)</font></font><br />
   </font></font></a>
   <div id="graph_Bayes" width="800" height="60"></div>
   <div id="raster_Bayes" width="800" height="10"></div>
-  <div id="optimal_Bayes" style="font-size:10pt; margin-bottom:6px"></div>
+  <div class="buttons">
+    <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Bayes()" />
+    <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssBayes/bayes.html'" />
+    <INPUT class="button" type="button" value="rate and irregularity" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssNeCo09/page_SULAB2.html'" />
+    <a href="./matlab/BayesRR.zip" download="BayesRR.zip">
+      <INPUT class="button" type="button" value="matlab" /></a>
+  </div>
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(F) Two-state Hidden Markov Model <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.89.022705" target="_blank">[Reference 6]</a>.<br />
   </font></font>
+
+  
   <div id="graph_HMM" width="800" height="60"></div>
   <div id="raster_HMM" width="800" height="10"></div>
-  <div id="optimal_HMM" style="font-size:10pt; margin-bottom:6px"></div>
+  <div class="buttons">
+    <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_HMM()" />
+    <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/msHMM/HMM.html'" />
+    <a href="" download="">
+      <INPUT class="button" type="button" value="matlab" /></a>
+  </div>
   <font size="2pt" face="Arial"><font size="2pt"><br />
   <!--<font face="Arial Black" size=3><strong>3. Output data sheet.</strong></font>&nbsp;&nbsp;
-<INPUT type="button" value="Click" onclick="OutputResults()"><br>
+<INPUT class="button" type="button" value="Click" onclick="OutputResults()"><br>
 </FORM>
 --></font></font>
   <hr width="920" align="left" />

@@ -382,7 +382,7 @@ function DrawGraph_Kernel12(spike_time){
 	var wrap = d3.select('#graph_Kernel2');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html";
+	url = "";
 	var matlab = "";
 		//"./matlab/sskernel.m"
 
@@ -397,14 +397,14 @@ function DrawGraph_Kernel12(spike_time){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy2) ).attr("fill","#FFDEAD").attr("stroke","#DFBE8D");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel2()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
+	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font>";
 }
 
 function DrawGraph_HMM(spike_time){
 	var wrap = d3.select('#graph_HMM');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/msHMM/HMM.html";
+	var url = "";
 	var matlab = "";
 		//"./matlab/~~~.m"
 	
@@ -427,16 +427,15 @@ function DrawGraph_HMM(spike_time){
 	    }
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_HMM").innerHTML = "<INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_HMM()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
 }
 
 function DrawGraph_Bayes(spike_time){
 	var wrap = d3.select('#graph_Bayes');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url1 = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssBayes/bayes.html";
-	var url2 = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssNeCo09/page_SULAB2.html";
-	var matlab = "./matlab/BayesRR.zip"
+	var url1 = "";
+	var url2 = "";
+	var matlab = ""
 
 	var maxy;
 	var xy = new Array();
@@ -458,7 +457,6 @@ function DrawGraph_Bayes(spike_time){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy) ).attr("fill","#FFC0CB").attr("stroke","#DFA0AB");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_Bayes").innerHTML = "　<INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:369px;\" value=\"data sheet\" onclick=\"OutputResults_Bayes()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:480px\" value=\"more detail\" onclick=\"location.href='" + url1 + "'\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:595px\" value=\"rate and irregularity\" onclick=\"location.href='" + url2 + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
 }
 
 
