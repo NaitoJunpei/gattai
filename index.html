@@ -64,42 +64,39 @@ obj1.addEventListener("change",function(evt){
 
 <br />
   <font size = "2pt">&nbsp;&nbsp;&nbsp;&nbsp;<textarea name="spikes" rows="3" cols="120" style="font-size:9.5pt"></textarea><br />
-  &nbsp;&nbsp;&nbsp;&nbsp;Please list spike times in increasing order, separated by a comma or a space.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;Your data would not leak out, because the computation is carried out by your computer.<br />
   <br />
   </font><font size="3"><strong>2. </strong></font><input type="button" style="font:10.5pt Arial;" value="Estimate the firing rate." onclick="Main();" />
 </font>
   <div id="loading" style="font-size:10pt; display:inline-block; visibility:hidden"><font size="2pt" face="Arial"><img src="loading.gif" />processing...</font></div>
-  <font face="Arial">
-  </font><font size="2pt" face="Arial"><br />
-  <font size="2pt">&#160;&#160;&#160;&#160;&#160;(A) Histogram: L2 risk minimization <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2007NeCo.pdf" target="_blank">[1]</a>.<br />
-  </font></font>
+  <font size="2pt" face="Arial"><br />
+  <font size="2pt">&#160;&#160;&#160;&#160;&#160;(A) Histogram: L2 rismization <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2007NeCo.pdf" target="_blank">[Reference 1]</a>. </font></font><a href="http://176.32.89.45/~hideaki/res/histogram.html" target="_blank"><font size="2pt" face="Arial"><font size="2pt"><font face="Arial"><font size="2pt">(Related site)</font></font><br />
+  </font></font></a>
   <div id="graph_SS" width="800" height="60"></div>
   <div id="raster_SS" width="800" height="10"></div>
   <div id="optimal_SS" style="font-size:10pt; margin-bottom:6px"></div>
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(B) Histogram: L2 risk minimization for non-Poisson
-  spike trains <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2011NeCo_histogram.pdf" target="_blank">[2]</a>.<br />
+  spike trains <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2011NeCo_histogram.pdf" target="_blank">[Reference 2]</a>.<br />
   </font></font>
   <div id="graph_OS" width="800" height="60"></div>
   <div id="raster_OS" width="800" height="10"></div>
   <div id="optimal_OS" style="font-size:10pt; margin-bottom:6px"></div>
-  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(C) Kernel density estimation: L2 risk minimization <a href="https://link.springer.com/article/10.1007%2Fs10827-009-0180-4" target="_blank">[3]</a>.<br />
+  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(C) Kernel density estimation: L2 risk minimization <a href="https://link.springer.com/article/10.1007%2Fs10827-009-0180-4" target="_blank">[Reference 3]</a>.<br />
   </font></font>
   <div id="graph_Kernel" width="800" height="60"></div>
   <div id="raster_Kernel" width="800" height="10"></div>
   <div id="optimal_Kernel" style="font-size:10pt; margin-bottom:6px"></div>
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(D) Kernel density estimation: L2 risk minimization,
-  <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html" target="_blank">reflection boundary</a>.<br />
+  with <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html" target="_blank">[reflection boundary]</a>.<br />
   </font></font>
   <div id="graph_Kernel2" width="800" height="60"></div>
   <div id="raster_Kernel2" width="800" height="10"></div>
   <div id="optimal_Kernel2" style="font-size:10pt; margin-bottom:6px"></div>
-  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(E) Bayesian rate estimation <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2005JPhysA.pdf" target="_blank">[4]</a> <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2009NeCo.pdf" target="_blank">[5]</a>.<br />
-  </font></font>
+  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(E) Bayesian rate estimation <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2005JPhysA.pdf" target="_blank">[Reference 4]</a> <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2009NeCo.pdf" target="_blank">[Reference 5]</a>. </font></font><a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssNeCo09/page_SULAB2.html" target="_blank"><font size="2pt" face="Arial"><font size="2pt"><font face="Arial"><font size="2pt">(Estimating rate and irregularity)</font></font><br />
+  </font></font></a>
   <div id="graph_Bayes" width="800" height="60"></div>
   <div id="raster_Bayes" width="800" height="10"></div>
   <div id="optimal_Bayes" style="font-size:10pt; margin-bottom:6px"></div>
-  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(F) Two-state Hidden Markov Model <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.89.022705" target="_blank">[6]</a>.<br />
+  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(F) Two-state Hidden Markov Model <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.89.022705" target="_blank">[Reference 6]</a>.<br />
   </font></font>
   <div id="graph_HMM" width="800" height="60"></div>
   <div id="raster_HMM" width="800" height="10"></div>
@@ -111,20 +108,8 @@ obj1.addEventListener("change",function(evt){
 --></font></font>
   <hr width="920" align="left" />
   <font size="2pt" face="Arial"><br />
-  <!-- Contact -->References<br />
-  <br />
-  <font size="-1"><a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2007NeCo.pdf" target="_blank">[1] Shimazaki H and Shinomoto S (2007) A method for selecting the bin size
-  of a time histogram. Neural Computation 19:1503-1700</a>.<br />
-  <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2011NeCo_histogram.pdf" target="_blank">[2] Omi T and Shinomoto S (2011) Optimizing time histograms for non-Poissonian spike trains. Neural Computation 23:3125-3144</a>.<br />
-  <a href="https://link.springer.com/article/10.1007%2Fs10827-009-0180-4" target="_blank">[3] Shimazaki H and Shinomoto S (2010) Kernel bandwidth optimization in
-  spike rate estimation. J. Computational Neuroscience 29:171-182</a>.<br />
-  <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2005JPhysA.pdf" target="_blank">[4] Koyama S and Shinomoto S (2005) Empirical Bayes interpretations of random point events. J. Phys. A 38:L531-L537</a>.<br />
-  <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2009NeCo.pdf" target="_blank">[5] Shimokawa T and Shinomoto S (2009) Estimating instantaneous irregularity of neuronal firing. Neural Computation 21:1931-1951.</a><br />
-  <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.89.022705" target="_blank">[6] Mochizuki Y and Shinomoto S (2014) Analog and digital codes in the
-  brain. Physical Review E 89:022705</a>.</font><br />
-  <br />
   </font>
-  <div><font size="2pt" face="Arial"><font size="-1">Review article can be downloaded: <br />
+  <div><font size="2pt" face="Arial"><font size="-1">Review article: <br />
   <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2010Book.pdf" target="_blank">Shinomoto S (2010) Estimating the firing rate. in &quot;Analysis of Parallel
     Spike Train Data&quot; (eds. S. Gruen and S. Rotter) (Springer, New York)</a>.<br />
     <br />
@@ -152,7 +137,7 @@ Arial"><img border="0" width="40" height="10" id="_x0000_i1030" src="http://www.
     </table>
     <br />
     <font size="2pt" face="Arial">
-    <font size="-1">Matlab and Python codes will be provided shortly.</font>
+    <font size="-1">Python codes will be provided shortly.</font>
 
 </font></div>
   </form>

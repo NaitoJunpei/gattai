@@ -317,10 +317,11 @@ function DrawGraph_SSOS(spike_time){
 	    }else{
 	    	svg.append("rect").attr("x", xx).attr("y", height_graph-height_hist * y).attr("width", width_graph - width_graph * x).attr("height", height_hist * y).attr("fill","#87CEFA").attr("stroke","#67AEDA");
 	    }
+
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
+
 	document.getElementById("optimal_SS").innerHTML = "　<INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:436px;\" value=\"data sheet\" onclick=\"OutputResults_SS()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:535px\" value=\"more detail\" onclick=\"location.href='" + url1 + "'\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:640px\" value=\"related site\" onclick=\"location.href='" + url2 + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
-	
 
 	time_old[2] = new Date().getTime();
 	
@@ -345,6 +346,7 @@ function DrawGraph_SSOS(spike_time){
 	    }
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
+
 	document.getElementById("optimal_OS").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bin size = <font color=\"red\">" + opt[1].toFixed(2) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;Irregularity is estimated as Lv = <font color=\"red\">" + lv.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_OS()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
 }
 
