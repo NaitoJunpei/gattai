@@ -6,6 +6,7 @@
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="GENERATOR" content="JustSystems Homepage Builder Version 18.0.6.0 for Windows" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
+<link rel="stylesheet" href="main.css" type="text/css" />
 <script src="d3.v3.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="mt.js"></script>
 <script type="text/javascript" src="bayes_funcs.js"></script>
@@ -73,13 +74,28 @@ obj1.addEventListener("change",function(evt){
   </font></font></a>
   <div id="graph_SS" width="800" height="60"></div>
   <div id="raster_SS" width="800" height="10"></div>
+  <div class="buttons">
+    <INPUT type="button" value="data sheet" onclick="OutputResults_SS()" />
+    <INPUT type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sshist/hist.html'" />
+    <INPUT type="button" value="related site" onclick="location.href='http://176.32.89.45/~hideaki/res/histogram.html'" />
+    <a href="./matlab/sshist.m" download="sshist.m">
+      <INPUT type="button" value="matlab" /></a>
+  </div>
   <div id="optimal_SS" style="font-size:10pt; margin-bottom:6px"></div>
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(B) Histogram: L2 risk minimization for non-Poisson
   spike trains <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2011NeCo_histogram.pdf" target="_blank">[Reference 2]</a>.<br />
   </font></font>
   <div id="graph_OS" width="800" height="60"></div>
   <div id="raster_OS" width="800" height="10"></div>
-  <div id="optimal_OS" style="font-size:10pt; margin-bottom:6px"></div>
+  <div>
+  <div id="optimal_OS" class="info"></div>
+  <div class="buttons">
+
+    <INPUT type="button" value="data sheet" onclick="OutputResults_OS()">
+    <INPUT type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/oshist/hist.html'">
+    <a href="./matlab/hist_np.m" download="hist_np.m">
+      <INPUT type="button" value="matlab"></a>
+  </div></div>
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(C) Kernel density estimation: L2 risk minimization <a href="https://link.springer.com/article/10.1007%2Fs10827-009-0180-4" target="_blank">[Reference 3]</a>.<br />
   </font></font>
   <div id="graph_Kernel" width="800" height="60"></div>

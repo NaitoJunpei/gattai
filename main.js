@@ -321,7 +321,7 @@ function DrawGraph_SSOS(spike_time){
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 
-	document.getElementById("optimal_SS").innerHTML = "　<INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:436px;\" value=\"data sheet\" onclick=\"OutputResults_SS()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:535px\" value=\"more detail\" onclick=\"location.href='" + url1 + "'\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:640px\" value=\"related site\" onclick=\"location.href='" + url2 + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
+	// document.getElementById("optimal_SS").innerHTML = "";
 
 	time_old[2] = new Date().getTime();
 	
@@ -329,8 +329,8 @@ function DrawGraph_SSOS(spike_time){
 	wrap = d3.select('#graph_OS');
 	wrap.select("svg").remove();	// 初期化
 	svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/oshist/hist.html";
-	var matlab = "./matlab/hist_np.m"
+	url = "";
+	var matlab = ""
 	
 	var opt_rate_OS = new Array();
 	rate_max = EstimateRate(spike_time, opt[1], opt_rate_OS);
@@ -347,7 +347,7 @@ function DrawGraph_SSOS(spike_time){
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 
-	document.getElementById("optimal_OS").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bin size = <font color=\"red\">" + opt[1].toFixed(2) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;Irregularity is estimated as Lv = <font color=\"red\">" + lv.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_OS()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
+	document.getElementById("optimal_OS").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bin size = <font color=\"red\">" + opt[1].toFixed(2) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;Irregularity is estimated as Lv = <font color=\"red\">" + lv.toFixed(2) + "</font>";
 }
 
 function DrawGraph_Kernel12(spike_time){
