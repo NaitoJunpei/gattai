@@ -298,9 +298,6 @@ function DrawGraph_SSOS(spike_time){
 	var wrap = d3.select('#graph_SS');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url1 = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sshist/hist.html";
-	var url2 = "http://176.32.89.45/~hideaki/res/histogram.html";
-	var matlab = "./matlab/sshist.m"
 	
 	var opt = new Array();
 	opt = SSOS(spike_time);
@@ -321,16 +318,12 @@ function DrawGraph_SSOS(spike_time){
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 
-	// document.getElementById("optimal_SS").innerHTML = "";
-
 	time_old[2] = new Date().getTime();
 	
 	//OS
 	wrap = d3.select('#graph_OS');
 	wrap.select("svg").remove();	// 初期化
 	svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	url = "";
-	var matlab = ""
 	
 	var opt_rate_OS = new Array();
 	rate_max = EstimateRate(spike_time, opt[1], opt_rate_OS);
@@ -355,8 +348,6 @@ function DrawGraph_Kernel12(spike_time){
 	var wrap = d3.select('#graph_Kernel');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url = "";
-	var matlab = ""
 	
 	var opt = Kernel(spike_time);
 	var opty1 = new Array();
@@ -382,9 +373,6 @@ function DrawGraph_Kernel12(spike_time){
 	var wrap = d3.select('#graph_Kernel2');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	url = "";
-	var matlab = "";
-		//"./matlab/sskernel.m"
 
 	var xy2 = new Array();
 	for (var i = 0;i<res_graph;i++) {
@@ -404,9 +392,6 @@ function DrawGraph_HMM(spike_time){
 	var wrap = d3.select('#graph_HMM');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url = "";
-	var matlab = "";
-		//"./matlab/~~~.m"
 	
 	var x,y,maxy;
 	var opty;
@@ -433,9 +418,6 @@ function DrawGraph_Bayes(spike_time){
 	var wrap = d3.select('#graph_Bayes');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url1 = "";
-	var url2 = "";
-	var matlab = ""
 
 	var maxy;
 	var xy = new Array();
