@@ -340,7 +340,7 @@ function DrawGraph_SSOS(spike_time){
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 
-	document.getElementById("optimal_OS").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bin size = <font color=\"red\">" + opt[1].toFixed(2) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;Irregularity is estimated as Lv = <font color=\"red\">" + lv.toFixed(2) + "</font>";
+	document.getElementById("optimal_OS").innerHTML = "Optimal bin size = <font color=\"red\">" + opt[1].toFixed(2) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;Irregularity is estimated as Lv = <font color=\"red\">" + lv.toFixed(2) + "</font>";
 }
 
 function DrawGraph_Kernel12(spike_time){
@@ -365,7 +365,7 @@ function DrawGraph_Kernel12(spike_time){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy1) ).attr("fill","#F0E68C").attr("stroke","#D0C66C");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_Kernel").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font>";
+	document.getElementById("optimal_Kernel").innerHTML = "Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font>";
 	
 	time_old[4] = new Date().getTime();
 	
@@ -385,7 +385,7 @@ function DrawGraph_Kernel12(spike_time){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy2) ).attr("fill","#FFDEAD").attr("stroke","#DFBE8D");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font>";
+	document.getElementById("optimal_Kernel2").innerHTML = "Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font>";
 }
 
 function DrawGraph_HMM(spike_time){
