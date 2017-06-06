@@ -1,0 +1,18 @@
+.button {
+    font:9pt Arial;
+    font-weight: bold;
+    margin-left: 50;
+    margin-right: 0;
+}
+    
+.buttons {
+    width: 800;
+    text-align: right;
+}
+
+.info {
+    font-size: 10pt;
+    margin-bottom: 6px;
+    float: left;
+    margin-left: 20;
+}

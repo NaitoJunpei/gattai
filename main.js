@@ -298,8 +298,11 @@ function DrawGraph_SSOS(spike_time){
 	var wrap = d3.select('#graph_SS');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
+<<<<<<< HEAD
 	var url1 = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sshist/hist.html";
 	var matlab = "./matlab/sshist.m"
+=======
+>>>>>>> origin/master
 	
 	var opt = new Array();
 	opt = SSOS(spike_time);
@@ -316,10 +319,14 @@ function DrawGraph_SSOS(spike_time){
 	    }else{
 	    	svg.append("rect").attr("x", xx).attr("y", height_graph-height_hist * y).attr("width", width_graph - width_graph * x).attr("height", height_hist * y).attr("fill","#87CEFA").attr("stroke","#67AEDA");
 	    }
+
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
+<<<<<<< HEAD
 	document.getElementById("optimal_SS").innerHTML = "　Optimal bin size = <font color=\"red\">" + opt[0].toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_SS()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px\" value=\"more detail\" onclick=\"location.href='" + url1 + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
 	
+=======
+>>>>>>> origin/master
 
 	time_old[2] = new Date().getTime();
 	
@@ -327,8 +334,6 @@ function DrawGraph_SSOS(spike_time){
 	wrap = d3.select('#graph_OS');
 	wrap.select("svg").remove();	// 初期化
 	svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/oshist/hist.html";
-	var matlab = "./matlab/hist_np.m"
 	
 	var opt_rate_OS = new Array();
 	rate_max = EstimateRate(spike_time, opt[1], opt_rate_OS);
@@ -344,7 +349,8 @@ function DrawGraph_SSOS(spike_time){
 	    }
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_OS").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bin size = <font color=\"red\">" + opt[1].toFixed(2) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;Irregularity is estimated as Lv = <font color=\"red\">" + lv.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_OS()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
+
+	document.getElementById("optimal_OS").innerHTML = "Optimal bin size = <font color=\"red\">" + opt[1].toFixed(2) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;Irregularity is estimated as Lv = <font color=\"red\">" + lv.toFixed(2) + "</font>";
 }
 
 function DrawGraph_Kernel12(spike_time){
@@ -352,8 +358,6 @@ function DrawGraph_Kernel12(spike_time){
 	var wrap = d3.select('#graph_Kernel');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sskernel/kernel.html";
-	var matlab = "./matlab/sskernel.m"
 	
 	var opt = Kernel(spike_time);
 	var opty1 = new Array();
@@ -371,7 +375,7 @@ function DrawGraph_Kernel12(spike_time){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy1) ).attr("fill","#F0E68C").attr("stroke","#D0C66C");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_Kernel").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
+	document.getElementById("optimal_Kernel").innerHTML = "Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font>";
 	
 	time_old[4] = new Date().getTime();
 	
@@ -379,9 +383,6 @@ function DrawGraph_Kernel12(spike_time){
 	var wrap = d3.select('#graph_Kernel2');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html";
-	var matlab = "";
-		//"./matlab/sskernel.m"
 
 	var xy2 = new Array();
 	for (var i = 0;i<res_graph;i++) {
@@ -394,16 +395,13 @@ function DrawGraph_Kernel12(spike_time){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy2) ).attr("fill","#FFDEAD").attr("stroke","#DFBE8D");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_Kernel2").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_Kernel2()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px;\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
+	document.getElementById("optimal_Kernel2").innerHTML = "Optimal bandwidth = <font color=\"red\">" + opt.toFixed(2) + "</font>";
 }
 
 function DrawGraph_HMM(spike_time){
 	var wrap = d3.select('#graph_HMM');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
-	var url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/msHMM/HMM.html";
-	var matlab = "";
-		//"./matlab/~~~.m"
 	
 	var x,y,maxy;
 	var opty;
@@ -424,15 +422,17 @@ function DrawGraph_HMM(spike_time){
 	    }
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
-	document.getElementById("optimal_HMM").innerHTML = "<INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_HMM()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
 }
 
 function DrawGraph_Bayes(spike_time){
 	var wrap = d3.select('#graph_Bayes');
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
+<<<<<<< HEAD
 	var url = "http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssBayes/bayes.html";
 	var matlab = "./matlab/BayesRR.zip"
+=======
+>>>>>>> origin/master
 
 	var maxy;
 	var xy = new Array();
@@ -454,7 +454,10 @@ function DrawGraph_Bayes(spike_time){
 	      .y(function(d) {return d[1];});
 	svg.append("path").attr("d", line(xy) ).attr("fill","#FFC0CB").attr("stroke","#DFA0AB");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
+<<<<<<< HEAD
 	document.getElementById("optimal_Bayes").innerHTML = "　<INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:493px;\" value=\"data sheet\" onclick=\"OutputResults_Bayes()\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:615px\" value=\"more detail\" onclick=\"location.href='" + url + "'\"><a href='" + matlab + "'\" download=\"" + matlab.substr(9) + "\"><INPUT type=\"button\" style=\"font:9pt Arial; font-weight: bold; position:absolute; left:740px;\" value=\"matlab\"></a>";
+=======
+>>>>>>> origin/master
 }
 
 
