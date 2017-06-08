@@ -77,7 +77,9 @@ obj1.addEventListener("change",function(evt){
     <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_SS()" />
     <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sshist/hist.html'" />
     <a href="./matlab/sshist.m" download="sshist.m">
-      <INPUT class="button" type="button" value="matlab" /></a>
+      <INPUT class="button" type="button" value="matlab code" /></a>
+    <a href="./python/SS.py" download="SS.py">
+      <INPUT class="button" type="button" value="python code" /></a>
   </div>
 
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(B) Histogram: L2 risk minimization for non-Poisson
@@ -90,7 +92,9 @@ obj1.addEventListener("change",function(evt){
       <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_OS()">
       <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/oshist/hist.html'">
       <a href="./matlab/hist_np.m" download="hist_np.m">
-	<INPUT class="button" type="button" value="matlab"></a>
+	<INPUT class="button" type="button" value="matlab code" /></a>
+    <a href="./python/OS.py" download="OS.py">
+      <INPUT class="button" type="button" value="python code" /></a>
     </div>
 
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(C) Kernel density estimation: L2 risk minimization <a href="https://link.springer.com/article/10.1007%2Fs10827-009-0180-4" target="_blank">[Reference 3]</a>.<br />
@@ -102,7 +106,9 @@ obj1.addEventListener("change",function(evt){
       <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Kernel()" />
       <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sskernel/kernel.html'" />
       <a href="./matlab/sskernel.m" download="sskernel.m">
-	<INPUT class="button" type="button" value="matlab" /></a>
+	<INPUT class="button" type="button" value="matlab code" /></a>
+    <a href="./python/KernelDensityEstimation.py" download="KernelDensityEstimation.py">
+      <INPUT class="button" type="button" value="python code" /></a>
     </div>
 
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(D) Kernel density estimation: L2 risk minimization,
@@ -114,7 +120,9 @@ obj1.addEventListener("change",function(evt){
     <div class="buttons">
       <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Kernel2()" />
       <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html'" />
-      <a href='./matlab/sskernel_ref.m' download="sskernel_ref.m"><INPUT class="button" type="button" value="matlab" /></a>
+      <a href='./matlab/sskernel_ref.m' download="sskernel_ref.m"><INPUT class="button" type="button" value="matlab code" /></a>
+    <a href="./python/KDERB.py" download="KDERB.py">
+      <INPUT class="button" type="button" value="python code" /></a>
   </div>
 
   <font size="2pt" face="Arial">&#160;&#160;&#160;&#160;&#160;(E) Bayesian rate estimation <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2005JPhysA.pdf" target="_blank">[Reference 4]</a> <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/papersPDF/shino2009NeCo.pdf" target="_blank">[Reference 5]</a>. </font><a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssNeCo09/page_SULAB2.html" target="_blank"><font size="2pt" face="Arial">(Estimating rate and irregularity)</font></a><br />
@@ -124,7 +132,9 @@ obj1.addEventListener("change",function(evt){
     <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Bayes()" />
     <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssBayes/bayes.html'" />
     <a href="./matlab/BayesRR.zip" download="BayesRR.zip">
-      <INPUT class="button" type="button" value="matlab" /></a>
+      <INPUT class="button" type="button" value="matlab code" /></a>
+    <a href="./python/~~~.py" download="~~~.py">
+      <INPUT class="button" type="button" value="python code" /></a>
   </div>
   
   <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(F) Two-state Hidden Markov Model <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.89.022705" target="_blank">[Reference 6]</a>.<br />
@@ -135,7 +145,9 @@ obj1.addEventListener("change",function(evt){
     <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_HMM()" />
     <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/msHMM/HMM.html'" />
     <a href="" download="HMM.m">
-      <INPUT class="button" type="button" value="matlab" /></a>
+      <INPUT class="button" type="button" value="matlab code" /></a>
+    <a href="./python/~~.py" download="~~.py">
+      <INPUT class="button" type="button" value="python code" /></a>
   </div>
   <font size="2pt" face="Arial"><font size="2pt"><br />
   <!--<font face="Arial Black" size=3><strong>3. Output data sheet.</strong></font>&nbsp;&nbsp;
@@ -171,11 +183,7 @@ Arial"><img border="0" width="40" height="10" id="_x0000_i1030" src="http://www.
         </tr>
       </tbody>
     </table>
-    <br />
-    <font size="2pt" face="Arial">
-    <font size="-1">Python codes will be provided shortly.</font>
-
-</font></div>
+    <br /></div>
   </form>
   <font face="Arial">------------------ <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/english.html" target="_blank">Shigeru Shinomoto</a> --------------------------------------------------------------------------
 </font></div>
