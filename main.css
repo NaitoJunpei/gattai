@@ -10,6 +10,10 @@
     text-align: right;
 }
 
+.buttons>a {
+text-decoration: none;
+}
+
 .info {
     font-size: 10pt;
     margin-bottom: 0px;
