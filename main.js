@@ -317,6 +317,7 @@ function DrawGraph_SSOS(spike_time){
 
 	}
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
+	document.getElementById("optimal_SS").innerHTML = "Optimal bin size = <font color=\"red\">" + opt[0].toFixed(2) + "</font>";
 
 	time_old[2] = new Date().getTime();
 	
