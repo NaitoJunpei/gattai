@@ -14,8 +14,25 @@ def HMM(spike_times) :
     drawHMM(spike_times, rate_hmm)
 
 def drawHMM(spike_times, rate_hmm) :
-    xaxis = rate_hmm[:, 0]
-    yaxis = rate_hmm[:, 1]
+    # xaxis = rate_hmm[:, 0]
+    # yaxis = rate_hmm[:, 1]
+    xaxis = [rate_hmm[0, 0]]
+    yaxis = [rate_hmm[0, 1]]
+    tempx_old = tempx = rate_hmm[0, 0]
+    tempy_old = tempy = rate_hmm[0, 1]
+    for i in range(0, len(rate_hmm) - 1) :
+        tempx, tempy = rate_hmm[i]
+        if (tempy != tempy_old) :
+            mid = (tempx + tempx_old) / 2
+            xaxis.append(mid)
+            xaxis.append(mid)
+            yaxis.append(tempy_old)
+            yaxis.append(tempy)
+        tempx_old = tempx
+        tempy_old = tempy
+
+    xaxis.append(rate_hmm[-1, 0])
+    yaxis.append(rate_hmm[-1, 1])
     plt.plot(xaxis, yaxis)
     plt.xlim(xmin = min(xaxis), xmax = max(xaxis))
     plt.ylim(ymin = 0)
