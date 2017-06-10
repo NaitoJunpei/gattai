@@ -17,6 +17,7 @@ def drawHMM(spike_times, rate_hmm) :
     xaxis = rate_hmm[:, 0]
     yaxis = rate_hmm[:, 1]
     plt.plot(xaxis, yaxis)
+    plt.xlim(xmin = min(xaxis), xmax = max(xaxis))
     plt.ylim(ymin = 0)
     plt.show()
 
@@ -45,7 +46,6 @@ def get_hmm_ratefunc(spike_times, bin_width, max_value, min_value) :
     loop = 0
     flag = 0
     while(loop <= EMloop_num and flag == 0) :
-        print("\r%s\t" % loop), 
         vec_pi_new, vec_lambda_new, mat_A_new = HMM_M_step(vec_Xi, mat_A, vec_lambda, vec_pi, mat_Gamma, mat_Xi)
 
         vec_pi     = vec_pi_new.copy()
@@ -61,7 +61,6 @@ def get_hmm_ratefunc(spike_times, bin_width, max_value, min_value) :
 
         sum_check += sum(sum(abs(mat_A_old - mat_A)))
 
-        print(sum_check),
         if (sum_check / (1.0 * num_state * (num_state + 2)) < 1.0e-7) :
             flag = 1
             
@@ -188,12 +187,13 @@ def get_Gamma_Xi(mat_A, mat_emission, mat_alpha, mat_beta, vec_C) :
     num_of_obs    = len(mat_emission)
 
     mat_Gamma_buf = np.zeros([num_of_obs, num_of_states])
-    for n in range(0, num_of_obs) :
-        mat_Gamma_buf_n = mat_Gamma_buf[n]
-        mat_alpha_n     = mat_alpha[n]
-        mat_beta_n      = mat_beta[n]
-        for i in range(0, num_of_states) :
-            mat_Gamma_buf_n[i] = mat_alpha_n[i] * mat_beta_n[i]
+    # for n in range(0, num_of_obs) :
+    #     mat_Gamma_buf_n = mat_Gamma_buf[n]
+    #     mat_alpha_n     = mat_alpha[n]
+    #     mat_beta_n      = mat_beta[n]
+    #     for i in range(0, num_of_states) :
+    #         mat_Gamma_buf_n[i] = mat_alpha_n[i] * mat_beta_n[i]
+    mat_Gamma_buf = mat_alpha * mat_beta
 
 
     mat_Xi_buf = np.zeros([num_of_obs - 1, num_of_states, num_of_states])
@@ -236,8 +236,8 @@ def HMM_M_step(vec_Xi, mat_A, vec_lambda, vec_pi, mat_Gamma, mat_Xi) :
             lambda_denom += mat_Gamma[n][k]
             lambda_nume  += mat_Gamma[n][k] * vec_Xi[n]
 
-            if(lambda_denom == 0.0) :
-                vec_lambda_new[k] = 0.0
+        if(lambda_denom == 0.0) :
+            vec_lambda_new[k] = 0.0
         else :
             vec_lambda_new[k] = lambda_nume / lambda_denom
 
@@ -266,7 +266,7 @@ def HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi) :
     num_of_states = len(mat_A)
     num_of_obs    = len(vec_Xi)
     mat_hs_seq    = np.zeros([num_of_states, num_of_obs])
-    vec_logp_seq  = np.array([0] * num_of_states)
+    vec_logp_seq  = np.zeros(num_of_states)
 
     for j in range(0, num_of_states) :
         mat_hs_seq[j][0] = j
@@ -278,7 +278,7 @@ def HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi) :
         vec_logp_seq_buf = vec_logp_seq.copy()
 
         for j in range(0, num_of_states) :
-            vec_h_logprob_i = np.array([0] * num_of_states)
+            vec_h_logprob_i = np.zeros(num_of_states)
             for i in range(0, num_of_states) :
                 vec_h_logprob_i[i] = vec_logp_seq[i] + math.log(mat_emission[n][j] * mat_A[i][j]) / math.log(10)
 
