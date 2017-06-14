@@ -76,7 +76,6 @@ def xaxis(K, max_value, min_value) :
 
 
 def drawKDE(opty) :
-    fg = plt.figure(figsize = (80, 1))
-    plt.plot(opty)
+    plt.stackplot(range(0, 200), opty)
     plt.ylim(ymin = 0)
     plt.show()

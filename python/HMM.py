@@ -33,7 +33,7 @@ def drawHMM(spike_times, rate_hmm) :
 
     xaxis.append(rate_hmm[-1, 0])
     yaxis.append(rate_hmm[-1, 1])
-    plt.plot(xaxis, yaxis)
+    plt.stackplot(xaxis, yaxis)
     plt.xlim(xmin = min(xaxis), xmax = max(xaxis))
     plt.ylim(ymin = 0)
     plt.show()

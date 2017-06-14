@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
 import math
 
@@ -84,6 +83,6 @@ def drawBRE(spike_times, kalman) :
     for i in range(0, len(spike_times) - 1) :
         xaxis.append((spike_times[i] + spike_times[i + 1]) / 2)
 
-    plt.plot(xaxis, yaxis)
-    plt.ylim(ymin = 0)
+    plt.stackplot(xaxis, yaxis)
+    plt.ylim(ymin = -10)
     plt.show()
