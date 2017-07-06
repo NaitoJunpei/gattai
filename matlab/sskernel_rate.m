@@ -1,17 +1,17 @@
-function [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,tin,W)
-% [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,t,W)
+function [y,t,optw,W,C,confb95,yb] = sskernel(x,tin,W)
+% [y,t,optw,W,C,confb95,yb] = sskernel(x,t,W)
 %
-% Function `sskernel_ref' returns an optimized kernel density estimate
+% Function `sskernel' returns an optimized kernel density estimate 
 % using a Gauss kernel function.
 %
 % Examples:
 % >> x = 0.5-0.5*log(rand(1,1e3)); t = linspace(0,3,1000);
-% >> [y,t,optw] = sskernel_ref(x,t);
+% >> [y,t,optw] = sskernel(x,t);
 % This example produces a vector of kernel density estimates, y, at points
 % specified in a vector t, using an optimized bandwidth, optw (a standard 
 % deviation of a normal density function).
 % 
-% >> sskernel_ref(x);
+% >> sskernel(x);
 % By calling the function without output arguments, the estimated density 
 % is displayed along with 95% bootstrap confidence intervals.
 %
@@ -44,19 +44,19 @@ function [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,tin,W)
 %
 % 
 % Usage:
-% >> [y,t,optw] = sskernel_ref(x);
+% >> [y,t,optw] = sskernel(x);
 % When t is not given in the input arguments, i.e., the output argument t 
 % is generated automatically.
 %
 % >> W = linspace(0.01,1,20);
-% >> [y,t,optw] = sskernel_ref(x,t,W);
+% >> [y,t,optw] = sskernel(x,t,W);
 % The optimal bandwidth is selected from the elements of W.
 %
-% >> [y,t,optw] = sskernel_ref(x,t,0.1);
+% >> [y,t,optw] = sskernel(x,t,0.1);
 % If the density estimate with a given bandwidth, simply put a scalar value
 % as W. The computation is faster than the built-in function, ksdensity.
 %
-% >> [y,t,optw,confb95,yb] = sskernel_ref(x);
+% >> [y,t,optw,confb95,yb] = sskernel(x);
 % This additionally computes 95% bootstrap confidence intervals, confb95.
 % The bootstrap samples are provided as yb.
 % 
@@ -79,9 +79,11 @@ function [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,tin,W)
 % For more information, please visit 
 % http://2000.jukuin.keio.ac.jp/shimazaki/res/kernel.html
 %
-% See also SSVKERNEL, SSHIST, sskernel
+% See also SSVKERNEL, SSHIST
 % 
 % 
+% Hideaki Shimazaki 
+% http://2000.jukuin.keio.ac.jp/shimazaki
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters Settings
@@ -260,11 +262,6 @@ end
 
 function [C yh] = CostFunction(y_hist,N,w,dt)
 yh = fftkernel(y_hist,w/dt);  %density
-halflen = ceil(length(y_hist)/2);
-remlen = length(y_hist) - halflen;
-addleft = fftkernel(horzcat(zeros(1,remlen),y_hist(1:halflen)),w/dt);
-addright = fftkernel(horzcat(y_hist(halflen:length(y_hist)),zeros(1,remlen)),w/dt);
-yh = yh + horzcat(fliplr(addleft(1:halflen)),zeros(1,remlen)) + horzcat(zeros(1,remlen),fliplr(addright(halflen:length(addright))));
 
 %formula for density
 C = sum(yh.^2)*dt - 2* sum(yh.*y_hist)*dt...
@@ -289,6 +286,9 @@ function y = fftkernel(x,w)
 % Output argument
 % y: 	Smoothed signal.
 %
+% MAY 5/23, 2012 Author Hideaki Shimazaki
+% RIKEN Brain Science Insitute
+% http://2000.jukuin.keio.ac.jp/shimazaki
 
 L = length(x);
 Lmax = max(1:L+3*w);

@@ -216,7 +216,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Return results
-y = interp1(t,y*length(x),tin);
+y = interp1(t,y,tin);
 t = tin;
 
 
