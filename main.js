@@ -602,7 +602,7 @@ function kern(spike_time, width, y) {
 		for (var j in spike_time) {
 			if((x[i]-5*width <= spike_time[j]) && (spike_time[j] <= x[i]+5*width)){
 				gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
-				y[i] = y[i] + gauss / spike_time.length;
+				y[i] = y[i] + gauss;
 			}
 		}
 		if(maxy<y[i]) maxy=y[i];
@@ -626,19 +626,19 @@ function kern2(spike_time, width, y) {
 		for (var j in spike_time) {
 			if((x[i]-5*width <= spike_time[j]) && (spike_time[j] <= x[i]+5*width)){
 				gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-spike_time[j])*(x[i]-spike_time[j])/2/width/width);
-				y[i] = y[i] + gauss / spike_time.length;
+				y[i] = y[i] + gauss;
 			}
 		
 				
 			if (x[i] - 5*width<onset) {
 				if (-(x[i]-5*width)+2*onset > spike_time[j]){
 					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(onset-(spike_time[j]-onset)))*(x[i]-(onset-(spike_time[j]-onset)))/2/width/width);
-					addNumber = addNumber + gauss / spike_time.length;
+					addNumber = addNumber + gauss;
 				}
 			}else if(x[i]+5*width>offset){
 				if(-(x[i]+5*width)+2*offset > spike_time[i]){
 					gauss = 1/Math.sqrt(2*Math.PI)/width*Math.exp(-(x[i]-(offset+(offset-spike_time[j])))*(x[i]-(offset+(offset-spike_time[j])))/2/width/width);
-					addNumber = addNumber + gauss / spike_time.length;
+					addNumber = addNumber + gauss;
 				}
 			}
 		}
