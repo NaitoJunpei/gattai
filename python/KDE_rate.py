@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import math
 
-def KDERB(spike_times) :
+def KDE(spike_times) :
     spike_times = pd.Series(spike_times)
 
     optw = search_minimum(spike_times)
@@ -49,15 +49,9 @@ def kernel(spike_times, w) :
     for i in range(0, K) :
         temp = 0
         for spike_time in spike_times :
-            diff1 = x[i] - spike_time
-            diff2 = x[i] - (2 * max_value - spike_time)
-            diff3 = x[i] - (2 * min_value - spike_time)
-            if (abs(diff1) < 5 * w) :
-                temp += gauss(diff1, w) / len(spike_times)
-            if(abs(diff2) < 5 * w) :
-                temp += gauss(diff2, w) / len(spike_times)
-            if(abs(diff3) < 5 * w) :
-                temp += gauss(diff3, w) / len(spike_times)
+            diff = x[i] - spike_time
+            if (abs(diff) < 5 * w) :
+                temp += gauss(diff, w)
 
         y[i] = temp
 
