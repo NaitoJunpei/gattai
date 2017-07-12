@@ -81,9 +81,12 @@ function [y,t,optw,W,C,confb95,yb] = sskernel_rate(x,tin,W)
 %
 % See also SSVKERNEL, SSHIST
 % 
-% 
-% Hideaki Shimazaki 
+% Hideaki Shimazaki
 % http://2000.jukuin.keio.ac.jp/shimazaki
+%
+% (New correction in version 1)
+% y-axis was multiplied by the number of data, so that
+% y is a time histogram representing the density of spikes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters Settings
