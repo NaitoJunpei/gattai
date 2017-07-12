@@ -1,4 +1,4 @@
-function [y,t,optw,W,C,confb95,yb] = sskernel(x,tin,W)
+function [y,t,optw,W,C,confb95,yb] = sskernel_rate(x,tin,W)
 % [y,t,optw,W,C,confb95,yb] = sskernel(x,t,W)
 %
 % Function `sskernel' returns an optimized kernel density estimate 
@@ -11,7 +11,7 @@ function [y,t,optw,W,C,confb95,yb] = sskernel(x,tin,W)
 % specified in a vector t, using an optimized bandwidth, optw (a standard 
 % deviation of a normal density function).
 % 
-% >> sskernel(x);
+% >> sskernel_rate(x);
 % By calling the function without output arguments, the estimated density 
 % is displayed along with 95% bootstrap confidence intervals.
 %
@@ -44,7 +44,7 @@ function [y,t,optw,W,C,confb95,yb] = sskernel(x,tin,W)
 %
 % 
 % Usage:
-% >> [y,t,optw] = sskernel(x);
+% >> [y,t,optw] = sskernel_rate(x);
 % When t is not given in the input arguments, i.e., the output argument t 
 % is generated automatically.
 %
@@ -52,11 +52,11 @@ function [y,t,optw,W,C,confb95,yb] = sskernel(x,tin,W)
 % >> [y,t,optw] = sskernel(x,t,W);
 % The optimal bandwidth is selected from the elements of W.
 %
-% >> [y,t,optw] = sskernel(x,t,0.1);
+% >> [y,t,optw] = sskernel_rate(x,t,0.1);
 % If the density estimate with a given bandwidth, simply put a scalar value
 % as W. The computation is faster than the built-in function, ksdensity.
 %
-% >> [y,t,optw,confb95,yb] = sskernel(x);
+% >> [y,t,optw,confb95,yb] = sskernel_rate(x);
 % This additionally computes 95% bootstrap confidence intervals, confb95.
 % The bootstrap samples are provided as yb.
 % 
@@ -286,9 +286,13 @@ function y = fftkernel(x,w)
 % Output argument
 % y: 	Smoothed signal.
 %
-% MAY 5/23, 2012 Author Hideaki Shimazaki
+% JULY 7/5, 2017 Author Kazuki Nakamura
 % RIKEN Brain Science Insitute
 % http://2000.jukuin.keio.ac.jp/shimazaki
+%
+% (New correction in version 1)
+% y-axis was multiplied by the number of data, so that
+% y is a time histogram representing the density of spikes.
 
 L = length(x);
 Lmax = max(1:L+3*w);
