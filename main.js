@@ -676,9 +676,11 @@ function OutputResults_Kernel() {
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[0].toFixed(3)+"</td><td>0.00</td></tr>");
 	for (var i=0;i<xaxis.length;i++) {
 		WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
 	}
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[xaxis.length-1].toFixed(3)+"</td><td>0.00</td></tr>");
 	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
@@ -708,9 +710,11 @@ function OutputResults_Kernel2() {
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td> Y-AXIS (density) </td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[0].toFixed(3)+"</td><td>0.00</td></tr>");
 	for (var i=0;i<xaxis.length;i++) {
 		WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
 	}
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[xaxis.length -1].toFixed(3)+"</td><td>0.00</td></tr>");
 	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
