@@ -739,13 +739,13 @@ function OutputResults_HMM() {
 	PostData(spike_time);
 	var opty;
 	var opt = (offset-onset)/(spike_time.length-1);
-	var time = 0;
+	var time = onset;
 	opty = get_hmm_ratefunc(spike_time, opt);	//描画の細かさ0.05 ?
 
 	//save as csv
 	var filemessage = "X-AXIS,Y-AXIS\\n";
-	filemessage += "0,0\\n";
-	filemessage += "0," + opty[0][1].toFixed(3) + "\\n"
+	filemessage += time.toFixed(3) + ",0\\n";
+	filemessage += time.toFixed(3) + "," + opty[0][1].toFixed(3) + "\\n";
 	time += opt;
 	for (var i = 1; i < opty.length; i++) {
 		if (opty[i][1] != opty[i - 1][1]) {
@@ -756,7 +756,7 @@ function OutputResults_HMM() {
 	}
 	filemessage += time.toFixed(3) + "," + opty[opty.length - 1][1].toFixed(3) + "\\n";
 	filemessage += time.toFixed(3) + ",0\\n";
-	time = 0;
+	time = onset;
 		   
 	WIN_RESULTS = window.open();
 	WIN_RESULTS.document.open();
@@ -766,8 +766,9 @@ function OutputResults_HMM() {
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
-	WIN_RESULTS.document.writeln("<tr align=right><td>0.000</td><td>0.000</td></tr>");
-	WIN_RESULTS.document.writeln("<tr align=right><td>" +time.toFixed(3)+"</td><td>" + opty[0][1].toFixed(3) + "</td></tr>");
+	//WIN_RESULTS.document.writeln("<tr align=right><td>0.000</td><td>0.000</td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" +time.toFixed(2)+"</td><td>0.000</td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" + time.toFixed(2) + "</td><td>" + opty[0][1].toFixed(3) + "</td></tr>");
 	time+=opt;
 	for (var i=1;i<opty.length;i++) {
 		if(opty[i][1]!=opty[i-1][1]){
