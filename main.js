@@ -5,6 +5,7 @@ var height_spike = 10;
 var height_graph = 60;
 var height_hist =54;
 var max_repeat = 500;
+var max_count = 10; //ヒストグラムを作る際に値をずらす回数
 var res_graph = 200;
 
 var spike_num;
@@ -210,33 +211,47 @@ function SSOS(spike_time) {
 	if (lv < 1) np = "regular";
 	else np = "bursty";
 	//	binの数を変化(最大500)　計算量的にはここを短縮したい気持ち
+
+	var TT = spike_time.concat(spike_time.map(function(element) {
+		return element + (offset - onset);
+	}));
 	for (var bin_num = 1; bin_num < max_repeat; bin_num++) {
 		binsize = (offset - onset) / bin_num;
-		// スパイク数カウントの初期化
-		for (i = 0; i < bin_num; i++) {
-			count[i] = 0;
+		for (var cost_count = 0; cost_count < max_count; cost_count++) {
+			start = onset + cost_count * (offset - onset) / max_count;
+			end = offset + cost_count * (offset - onset) / max_count;
+			cost_SS = 0;
+			cost_OS = 0;
+			// スパイク数カウントの初期化
+			for (i = 0; i < bin_num; i++) {
+				count[i] = 0;
+			}
+			//スパイク数のカウント
+			for (i = 0; TT[i] < end; i++) {
+				if (TT[i] >= start) {
+					count[Math.floor((TT[i] - start) / binsize)]++;
+				}
+			}
+			// binのスパイク数の平均、分散を計算
+			av = 0;
+			va = 0;
+			w_av = 0;
+			for (i = 0; i < bin_num; i++) {
+				if (count[i] > 2) {
+					fano = 2.0 * lv / (3.0 - lv);
+				} else {
+					fano = 1.0;
+				}
+				w_av += fano * count[i] / bin_num;
+				av += count[i] / bin_num;
+				va += count[i] * count[i] / bin_num;
+			}
+			// コスト関数の計算
+			cost_SS += (2.0 * av - (va - av * av)) / (binsize * binsize);
+			cost_OS += (2.0 * w_av - (va - av * av)) / (binsize*binsize);
 		}
-		//スパイク数のカウント
-		for (i = 0; i < spike_time.length; i++) {
-			count[Math.floor((spike_time[i] - onset) / binsize)]++;
-		}
-		// binのスパイク数の平均、分散を計算
-		av = 0;
-		va = 0;
-	    w_av = 0;
-	    for (i = 0; i < bin_num; i++) {
-	        if (count[i] > 2) {
-	          fano = 2.0 * lv / (3.0 - lv);
-	        } else {
-	          fano = 1.0;
-	        }
-	        w_av += fano * count[i] / bin_num;
-	        av += count[i] / bin_num;
-	        va += count[i] * count[i] / bin_num;
-	    }
-		// コスト関数の計算
-		cost_SS = (2.0 * av - (va - av * av)) / (binsize * binsize);
-		cost_OS = (2.0 * w_av - (va - av * av)) / (binsize*binsize);
+		cost_SS /= max_count
+		cost_OS /= max_count
 		// コストが小さければ更新
 		if (cost_SS < cost_SS_min || bin_num == 1) {
 			cost_SS_min = cost_SS;
