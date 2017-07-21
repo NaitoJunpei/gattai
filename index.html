@@ -72,13 +72,13 @@ obj1.addEventListener("change",function(evt){
   </font></font></a>
   <div id="graph_SS" width="800" height="60"></div>
   <div id="raster_SS" width="800" height="10"></div>
-    <div id="optimal_SS" class="info"></div>
+  <div id="optimal_SS" class="info"></div>
   <div class="buttons">
     <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_SS()" />
     <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sshist/hist.html'" />
-    <a href="./matlab/sshist.m" download="sshist.m">
+    <a href="matlab/sshist.m" download="sshist.m">
       <INPUT class="button" type="button" value="matlab code" /></a>
-    <a href="./python/SS_v1.py" download="SS_v1.py">
+    <a href="python/SS_v1.py" download="SS_v1.py">
       <INPUT class="button" type="button" value="python code" /></a>
   </div>
 
@@ -87,41 +87,42 @@ obj1.addEventListener("change",function(evt){
   </font></font>
   <div id="graph_OS" width="800" height="60"></div>
   <div id="raster_OS" width="800" height="10"></div>
-    <div id="optimal_OS" class="info"></div>
+  <div id="optimal_OS" class="info"></div>
     <div class="buttons">
-      <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_OS()">
-      <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/oshist/hist.html'">
-      <a href="./matlab/hist_np_v1.m" download="hist_np_v1.m">
+      <input class="button" type="button" value="data sheet" onclick="OutputResults_OS()" />
+      <input class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/oshist/hist.html'" />
+      <a href="matlab/hist_np_v1.m" download="hist_np_v1.m">
 	<INPUT class="button" type="button" value="matlab code" /></a>
-    <a href="./python/OS_v1.py" download="OS_v1.py">
+    <a href="python/OS_v1.py" download="OS_v1.py">
       <INPUT class="button" type="button" value="python code" /></a>
     </div>
 
-  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(C) Kernel density estimation: L2 risk minimization <a href="https://link.springer.com/article/10.1007%2Fs10827-009-0180-4" target="_blank">[Reference 3]</a>.<br />
+  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(C) Kernel density estimation: L2 risk minimization
+  <a href="https://link.springer.com/content/pdf/10.1007%2Fs10827-009-0180-4.pdf" target="_blank">[Reference 3]</a>.<br />
   </font></font>
   <div id="graph_Kernel" width="800" height="60"></div>
   <div id="raster_Kernel" width="800" height="10"></div>
-    <div id="optimal_Kernel" class="info"></div>
+  <div id="optimal_Kernel" class="info"></div>
     <div class="buttons">
       <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Kernel()" />
       <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/sskernel/kernel.html'" />
-      <a href="./matlab/sskernel_rate.m" download="sskernel_rate.m">
+      <a href="matlab/sskernel_rate.m" download="sskernel_rate.m">
 	<INPUT class="button" type="button" value="matlab code" /></a>
-    <a href="./python/KDE_rate.py" download="KDE_rate.py">
+    <a href="python/KDE_rate.py" download="KDE_rate.py">
       <INPUT class="button" type="button" value="python code" /></a>
     </div>
 
-  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(D) Kernel density estimation: L2 risk minimization,
-  with <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html" target="_blank">[reflection boundary]</a>.<br />
+  <font size="2pt" face="Arial"><font size="2pt">&#160;&#160;&#160;&#160;&#160;(D) Kernel density estimation: L2 risk minimization
+  <font face="Arial"><font size="2pt"><a href="https://link.springer.com/content/pdf/10.1007%2Fs10827-009-0180-4.pdf" target="_blank">[Reference 3]</a></font></font>, with <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html" target="_blank">[reflection boundary]</a>.<br />
   </font></font>
   <div id="graph_Kernel2" width="800" height="60"></div>
   <div id="raster_Kernel2" width="800" height="10"></div>
-    <div id="optimal_Kernel2" class="info"></div>
+  <div id="optimal_Kernel2" class="info"></div>
     <div class="buttons">
       <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Kernel2()" />
       <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/reflectedkernel/reflectedkernel.html'" />
-      <a href='./matlab/sskernel_ref_rate.m' download="sskernel_ref_rate.m"><INPUT class="button" type="button" value="matlab code" /></a>
-    <a href="./python/KDERB_rate.py" download="KDERB_rate.py">
+      <a href="matlab/sskernel_ref_rate.m" download="sskernel_ref_rate.m"><INPUT class="button" type="button" value="matlab code" /></a>
+    <a href="python/KDERB_rate.py" download="KDERB_rate.py">
       <INPUT class="button" type="button" value="python code" /></a>
   </div>
 
@@ -131,9 +132,9 @@ obj1.addEventListener("change",function(evt){
   <div class="buttons">
     <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_Bayes()" />
     <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/ssBayes/bayes.html'" />
-    <a href="./matlab/BayesRR.zip" download="BayesRR.zip">
+    <a href="matlab/BayesRR.zip" download="BayesRR.zip">
       <INPUT class="button" type="button" value="matlab code" /></a>
-    <a href="./python/BRE.py" download="BRE.py">
+    <a href="python/BRE.py" download="BRE.py">
       <INPUT class="button" type="button" value="python code" /></a>
   </div>
   
@@ -144,9 +145,9 @@ obj1.addEventListener("change",function(evt){
   <div class="buttons">
     <INPUT class="button" type="button" value="data sheet" onclick="OutputResults_HMM()" />
     <INPUT class="button" type="button" value="more detail" onclick="location.href='http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/msHMM/HMM.html'" />
-    <a href="./matlab/HMM.m" download="HMM.m">
+    <a href="matlab/HMM.m" download="HMM.m">
       <INPUT class="button" type="button" value="matlab code" /></a>
-    <a href="./python/HMM.py" download="HMM.py">
+    <a href="python/HMM.py" download="HMM.py">
       <INPUT class="button" type="button" value="python code" /></a>
   </div>
   <font size="2pt" face="Arial"><font size="2pt"><br />
@@ -168,7 +169,7 @@ obj1.addEventListener("change",function(evt){
     Spike Train Data&quot; (eds. S. Gruen and S. Rotter) (Springer, New York)</a>.<br />
     <br />
     <br />
-    </font></font></font></font>
+    </font></font>
     <table bgcolor="#ffffcc">
       <tbody>
         <tr>
@@ -178,7 +179,7 @@ obj1.addEventListener("change",function(evt){
       </tbody>
     </table>
     <br />
-    <font size="2pt" face="Arial">Current version: 1.3 : 2017/07/20<br />
+    <font size="2pt" face="Arial">Current version: 1.3 : 2017/07/22<br />
     </font>
     <table>
       <tbody>
@@ -193,7 +194,7 @@ Arial"><img border="0" width="40" height="10" id="_x0000_i1030" src="http://www.
     <font size="2pt" face="Arial">Other analytical tools: <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/toolbox/english.htm" target="_blank">SULAB: Single Unit LABoratory<br /><br /></a>
 
   <font face="Arial">------------------ <a href="http://www.ton.scphys.kyoto-u.ac.jp/~shino/english.html" target="_blank">Shigeru Shinomoto</a> --------------------------------------------------------------------------
-</font></div>
+</font></font></div>
 <br />
 </body>
 </html>
