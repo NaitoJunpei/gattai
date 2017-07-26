@@ -1,6 +1,13 @@
-HISTOGRAMS ウェブアプリケーションの改訂史
+History of revisions in the HISTOGRAMS web application
 
-version 1.0 2017/05/16 matlab and python codes: 未設置
-version 1.1 2017/06/22 matlab and python codes 設置
-version 1.2 2017/07/12 (C),(D) 縦軸をrate表示に修正
-version 1.3 2017/07/20 (A),(B) MISE平均化 (E) data sheet 始点を修正
+version 1.0 2017/05/16
+matlab and python codes: incomplete
+
+version 1.1 2017/06/22
+matlab and python codes: completed
+
+version 1.2 2017/07/12
+(C),(D): revised the ordinates from density to rate 
+
+version 1.3 2017/07/20
+(A),(B) MISE averaged over 10 initial points
