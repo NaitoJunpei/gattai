@@ -1,3 +1,18 @@
+##########
+# OS_v1.pyを実行するには、matplotlib、numpy、pandasライブラリが必要です
+
+# 使い方
+# OS_v1.pyを、パスが通っているフォルダに置き、
+# import OS_v1
+# をすると、ファイル内の関数が、OS_v1.(関数名)の形で実行可能になります。
+
+# ユーザーが使用するのはOS関数のみで十分です。
+# OS関数は、スパイク列を引数に取ります。
+# スパイク列の形式は、list、numpy.arrayなどが利用可能です。
+# コスト関数が最小になるビン幅を選択し、それに基づいてヒストグラムを描画します。
+# 値を返しません。
+##########
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -22,25 +37,6 @@ def OS(spike_times) :
             lv += 3 / (len(spike_times) - 2)
 
     for bin_num in range(1, 500) :
-        # bin_width = (offset - onset) / bin_num
-        # count     = [0.0] * bin_num
-        # for x in spike_times :
-        #     count[int(math.floor((x - onset) / bin_width))] += 1
-
-        # av   = 0.0
-        # va   = 0.0
-        # w_av = 0.0
-        # for x in count :
-        #     if (x > 2) :
-        #         fano = 2.0 * lv / (3.0 - lv)
-        #     else :
-        #         fano = 1.0
-
-        #     w_av += fano * x / bin_num
-        #     av   += x / bin_num
-        #     va   += pow(x, 2) / bin_num
-
-        # cost = (2.0 * w_av - (va - av * av)) / pow(bin_width, 2)
         times = 10
         cost = cost_av(spike_times, onset, offset, lv, bin_num, times)
         
@@ -49,6 +45,22 @@ def OS(spike_times) :
             optimal_bin_num = bin_num
 
     drawOS(spike_times, optimal_bin_num)
+
+########## 
+# cost_f関数
+# コスト関数の計算を行います。
+
+# 引数
+# spike_times: スパイク列
+# start: ヒストグラムに利用する最初の時間
+# end: ヒストグラムに利用する最後の時間
+# lv: スパイク列に関するlv値 
+# bin_num: ヒストグラムのビンの数
+
+# 返り値
+# ヒストグラムのコスト関数の値
+########## 
+
 
 def cost_f(spike_times, start, end, lv, bin_num) :
     bin_width = (end - start) / bin_num
@@ -63,6 +75,23 @@ def cost_f(spike_times, start, end, lv, bin_num) :
 
     return ((2.0 * np.mean(hist * fano_bin) - (va - av * av)) / (bin_width * bin_width))
 
+########## 
+# cost_av関数
+# ヒストグラムに利用する最初の時間を変えながらコスト関数を計算し、その平均値を求めます。
+
+# 引数
+# spike_times: スパイク列
+# onset: スパイク列の記録開始時間
+# offset: スパイク列の記録終了時間
+# lv: スパイク列に関するlv値
+# bin_num: ヒストグラムのビンの数
+# times: 最初の時間を変える回数
+
+# 返り値
+# コスト関数の平均値
+##########
+
+
 def cost_av(spike_times, onset, offset, lv, bin_num, times) :
     temp = 0.0
     bin_width = (offset - onset) / bin_num
@@ -73,6 +102,18 @@ def cost_av(spike_times, onset, offset, lv, bin_num, times) :
         temp += cost_f(TT, start, end, lv, bin_num)
 
     return temp / times
+
+##########
+# drawOS関数
+# ヒストグラムの描画を行います。
+
+# 引数
+# spike_times: スパイク列
+# optimal_bin_num: ヒストグラムのビンの数
+
+# 返り値
+# なし
+########## 
 
 def drawOS(spike_times, optimal_bin_num):
     plt.hist(spike_times, optimal_bin_num)
