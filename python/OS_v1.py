@@ -71,7 +71,7 @@ def cost_f(spike_times, start, end, lv, bin_num) :
     av   = np.mean(hist)
     va   = np.mean(hist * hist)
     w_av = np.mean(hist * fano)
-    fano_bin = np.where(hist > 1, fano, 1.0)
+    fano_bin = np.where(hist > 2, fano, 1.0)
 
     return ((2.0 * np.mean(hist * fano_bin) - (va - av * av)) / (bin_width * bin_width))
 

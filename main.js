@@ -217,11 +217,11 @@ function SSOS(spike_time) {
 	}));
 	for (var bin_num = 1; bin_num < max_repeat; bin_num++) {
 		binsize = (offset - onset) / bin_num;
+		cost_SS = 0;
+		cost_OS = 0;
 		for (var cost_count = 0; cost_count < max_count; cost_count++) {
-			start = onset + cost_count * (offset - onset) / max_count;
-			end = offset + cost_count * (offset - onset) / max_count;
-			cost_SS = 0;
-			cost_OS = 0;
+			start = onset + cost_count * (binsize) / max_count;
+			end = offset + cost_count * (binsize) / max_count;
 			// スパイク数カウントの初期化
 			for (i = 0; i < bin_num; i++) {
 				count[i] = 0;
