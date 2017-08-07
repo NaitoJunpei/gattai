@@ -1,4 +1,4 @@
-function [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,tin,W)
+function [y,t,optw,W,C,confb95,yb] = sskernel_ref_rate(x,tin,W)
 % [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,t,W)
 %
 % Function `sskernel_ref' returns an optimized kernel density estimate
@@ -11,7 +11,7 @@ function [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,tin,W)
 % specified in a vector t, using an optimized bandwidth, optw (a standard 
 % deviation of a normal density function).
 % 
-% >> sskernel_ref(x);
+% >> sskernel_ref_rate(x);
 % By calling the function without output arguments, the estimated density 
 % is displayed along with 95% bootstrap confidence intervals.
 %
@@ -44,19 +44,19 @@ function [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,tin,W)
 %
 % 
 % Usage:
-% >> [y,t,optw] = sskernel_ref(x);
+% >> [y,t,optw] = sskernel_ref_rate(x);
 % When t is not given in the input arguments, i.e., the output argument t 
 % is generated automatically.
 %
 % >> W = linspace(0.01,1,20);
-% >> [y,t,optw] = sskernel_ref(x,t,W);
+% >> [y,t,optw] = sskernel_ref_rate(x,t,W);
 % The optimal bandwidth is selected from the elements of W.
 %
-% >> [y,t,optw] = sskernel_ref(x,t,0.1);
+% >> [y,t,optw] = sskernel_ref_rate(x,t,0.1);
 % If the density estimate with a given bandwidth, simply put a scalar value
 % as W. The computation is faster than the built-in function, ksdensity.
 %
-% >> [y,t,optw,confb95,yb] = sskernel_ref(x);
+% >> [y,t,optw,confb95,yb] = sskernel_ref_rate(x);
 % This additionally computes 95% bootstrap confidence intervals, confb95.
 % The bootstrap samples are provided as yb.
 % 
@@ -80,6 +80,14 @@ function [y,t,optw,W,C,confb95,yb] = sskernel_ref(x,tin,W)
 % http://2000.jukuin.keio.ac.jp/shimazaki/res/kernel.html
 %
 % See also SSVKERNEL, SSHIST, sskernel
+%
+%
+% Hideaki Shimazaki
+% http://2000.jukuin.keio.ac.jp/shimazaki
+%
+% (New correction in version 1)
+% y-axis was multiplied by the number of data, so that
+% y is a time histogram representing the density of spikes.
 % 
 % 
 
@@ -194,7 +202,7 @@ if nargout == 0 || nargout >= 6
     nbs = 1e3;        %number of bootstrap samples
     yb = zeros(nbs,length(tin));
 
-    for i = 1: nbs,
+    for i = 1: nbs
         %y_histb = poissrnd(y_hist*dt*N)/dt/N;
     
         idx = ceil(rand(1,N)*N);
@@ -216,7 +224,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Return results
-y = interp1(t,y*length(x),tin);
+y = interp1(t,y,tin);
 t = tin;
 
 
@@ -290,6 +298,13 @@ function y = fftkernel(x,w)
 % y: 	Smoothed signal.
 %
 
+% JULY 7/5, 2017 Author Kazuki Nakamura
+% RIKEN Brain Science Insitute
+% http://2000.jukuin.keio.ac.jp/shimazaki
+%
+% (New correction in version 1)
+% y-axis was multiplied by the number of data, so that
+% y is a time histogram representing the density of spikes.
 L = length(x);
 Lmax = max(1:L+3*w);
 n = 2^(nextpow2(Lmax));

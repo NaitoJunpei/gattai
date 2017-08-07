@@ -1,3 +1,18 @@
+##########
+# BRE.pyを実行するには、matplotlib、numpyライブラリが必要です
+
+# 使い方
+# BRE.pyを、パスが通っているフォルダに置き、
+# import BRE
+# をすると、ファイル内の関数が、BRE.(関数名)の形で実行可能になります。
+
+# ユーザーが使用するのはBRE関数のみで十分です。
+# BRE関数は、spike列を引数に取ります。
+# spike列の形式は、list、numpy.arrayなどが利用可能です。
+# EMアルゴリズムでパラメータを推定し、グラフを描画します。
+# 値を返しません。
+##########
+
 import matplotlib.pyplot as plt
 import numpy as np
 import math

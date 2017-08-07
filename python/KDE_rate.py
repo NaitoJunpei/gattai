@@ -1,3 +1,18 @@
+##########
+# KDE_rate.pyを実行するには、matplotlib、numpy、pandasライブラリが必要です
+
+# 使い方
+# KDE_rate.pyを、パスが通っているフォルダに置き、
+# import KDE_rate
+# をすると、ファイル内の関数が、KDE_rate.(関数名)の形で実行可能になります。
+
+# ユーザーが使用するのはKDE関数のみで十分です。
+# KDE関数は、spike列を引数に取ります。
+# spike列の形式は、list、numpy.arrayなどが利用可能です。
+# カーネル関数が最小となるビン幅を選び、カーネル関数をかけたグラフを描画します。
+# 値を返しません。
+##########
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -10,6 +25,17 @@ def KDE(spike_times) :
     opty = kernel(spike_times, optw)
 
     drawKDE(opty)
+
+########## 
+# search_minimum関数
+# コスト関数が最小となるwを探し、その値を返します
+
+# 引数
+# spike_times: スパイク列
+
+# 返り値
+# コストが最小となるwの値
+########## 
 
 def search_minimum(spike_times) :
     max_value   = max(spike_times)
@@ -39,6 +65,18 @@ def search_minimum(spike_times) :
 
     return w
 
+########## 
+# kernel関数
+# スパイク列に、設定したビン幅のGaussian Kernelをかけて返します
+
+# 引数
+# spike_times: スパイク列
+# w: ビン幅
+
+# 返り値
+# spike_timesにGaussian Kernelをかけた値
+##########
+
 def kernel(spike_times, w) :
     max_value = max(spike_times)
     min_value = min(spike_times)
@@ -57,8 +95,26 @@ def kernel(spike_times, w) :
 
     return y
 
+########## 
+# gauss関数
+# 平均0、分散w * wのgauss関数を計算します。
+##########
+
 def gauss(x, w) :
     return 1 / (w * math.sqrt(2 * math.pi)) * pow(math.e, (-x * x / (2 * w * w)))
+
+##########
+# xaxis関数
+# グラフを描画する際のx方向成分の決定をします。
+
+# 引数
+# K: グラフを書く点の数
+# max_value: x方向の最大値
+# min_value: x方向の最小値
+
+# 返り値
+# x方向成分の配列
+########## 
 
 def xaxis(K, max_value, min_value) :
     x    = [0] * K
@@ -68,6 +124,16 @@ def xaxis(K, max_value, min_value) :
 
     return x
 
+########## 
+# drawKDE関数
+# 点列を受け取り、折れ線グラフの描画を行います。
+
+# 引数
+# opty: 描画する点列
+
+# 返り値
+# なし
+##########
 
 def drawKDE(opty) :
     plt.stackplot(range(0, 200), opty)

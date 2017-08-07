@@ -5,6 +5,7 @@ var height_spike = 10;
 var height_graph = 60;
 var height_hist =54;
 var max_repeat = 500;
+var max_count = 10; //ヒストグラムを作る際に値をずらす回数
 var res_graph = 200;
 
 var spike_num;
@@ -210,33 +211,47 @@ function SSOS(spike_time) {
 	if (lv < 1) np = "regular";
 	else np = "bursty";
 	//	binの数を変化(最大500)　計算量的にはここを短縮したい気持ち
+
+	var TT = spike_time.concat(spike_time.map(function(element) {
+		return element + (offset - onset);
+	}));
 	for (var bin_num = 1; bin_num < max_repeat; bin_num++) {
 		binsize = (offset - onset) / bin_num;
-		// スパイク数カウントの初期化
-		for (i = 0; i < bin_num; i++) {
-			count[i] = 0;
+		cost_SS = 0;
+		cost_OS = 0;
+		for (var cost_count = 0; cost_count < max_count; cost_count++) {
+			start = onset + cost_count * (binsize) / max_count;
+			end = offset + cost_count * (binsize) / max_count;
+			// スパイク数カウントの初期化
+			for (i = 0; i < bin_num; i++) {
+				count[i] = 0;
+			}
+			//スパイク数のカウント
+			for (i = 0; TT[i] < end; i++) {
+				if (TT[i] >= start) {
+					count[Math.floor((TT[i] - start) / binsize)]++;
+				}
+			}
+			// binのスパイク数の平均、分散を計算
+			av = 0;
+			va = 0;
+			w_av = 0;
+			for (i = 0; i < bin_num; i++) {
+				if (count[i] > 2) {
+					fano = 2.0 * lv / (3.0 - lv);
+				} else {
+					fano = 1.0;
+				}
+				w_av += fano * count[i] / bin_num;
+				av += count[i] / bin_num;
+				va += count[i] * count[i] / bin_num;
+			}
+			// コスト関数の計算
+			cost_SS += (2.0 * av - (va - av * av)) / (binsize * binsize);
+			cost_OS += (2.0 * w_av - (va - av * av)) / (binsize*binsize);
 		}
-		//スパイク数のカウント
-		for (i = 0; i < spike_time.length; i++) {
-			count[Math.floor((spike_time[i] - onset) / binsize)]++;
-		}
-		// binのスパイク数の平均、分散を計算
-		av = 0;
-		va = 0;
-	    w_av = 0;
-	    for (i = 0; i < bin_num; i++) {
-	        if (count[i] > 2) {
-	          fano = 2.0 * lv / (3.0 - lv);
-	        } else {
-	          fano = 1.0;
-	        }
-	        w_av += fano * count[i] / bin_num;
-	        av += count[i] / bin_num;
-	        va += count[i] * count[i] / bin_num;
-	    }
-		// コスト関数の計算
-		cost_SS = (2.0 * av - (va - av * av)) / (binsize * binsize);
-		cost_OS = (2.0 * w_av - (va - av * av)) / (binsize*binsize);
+		cost_SS /= max_count
+		cost_OS /= max_count
 		// コストが小さければ更新
 		if (cost_SS < cost_SS_min || bin_num == 1) {
 			cost_SS_min = cost_SS;
@@ -676,9 +691,11 @@ function OutputResults_Kernel() {
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[0].toFixed(3)+"</td><td>0.00</td></tr>");
 	for (var i=0;i<xaxis.length;i++) {
 		WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
 	}
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[xaxis.length-1].toFixed(3)+"</td><td>0.00</td></tr>");
 	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
@@ -708,9 +725,11 @@ function OutputResults_Kernel2() {
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 	
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td> Y-AXIS (density) </td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[0].toFixed(3)+"</td><td>0.00</td></tr>");
 	for (var i=0;i<xaxis.length;i++) {
 		WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[i].toFixed(3)+"</td><td>" + opty[i].toFixed(3) + "</td></tr>");
 	}
+	WIN_RESULTS.document.writeln("<tr align=right><td>"+xaxis[xaxis.length -1].toFixed(3)+"</td><td>0.00</td></tr>");
 	WIN_RESULTS.document.writeln("</table><br>");
 	WIN_RESULTS.document.close();
 }
@@ -720,13 +739,13 @@ function OutputResults_HMM() {
 	PostData(spike_time);
 	var opty;
 	var opt = (offset-onset)/(spike_time.length-1);
-	var time = 0;
+	var time = onset;
 	opty = get_hmm_ratefunc(spike_time, opt);	//描画の細かさ0.05 ?
 
 	//save as csv
 	var filemessage = "X-AXIS,Y-AXIS\\n";
-	filemessage += "0,0\\n";
-	filemessage += "0," + opty[0][1].toFixed(3) + "\\n"
+	filemessage += time.toFixed(3) + ",0\\n";
+	filemessage += time.toFixed(3) + "," + opty[0][1].toFixed(3) + "\\n";
 	time += opt;
 	for (var i = 1; i < opty.length; i++) {
 		if (opty[i][1] != opty[i - 1][1]) {
@@ -737,7 +756,7 @@ function OutputResults_HMM() {
 	}
 	filemessage += time.toFixed(3) + "," + opty[opty.length - 1][1].toFixed(3) + "\\n";
 	filemessage += time.toFixed(3) + ",0\\n";
-	time = 0;
+	time = onset;
 		   
 	WIN_RESULTS = window.open();
 	WIN_RESULTS.document.open();
@@ -747,8 +766,9 @@ function OutputResults_HMM() {
 	WIN_RESULTS.document.writeln(GenerateOutputFileMessage(filemessage));
 
 	WIN_RESULTS.document.writeln("<table border=1><tr align=center><td width=150> X-AXIS (time)  </td><td width=150> Y-AXIS (density) </td></tr>");
-	WIN_RESULTS.document.writeln("<tr align=right><td>0.000</td><td>0.000</td></tr>");
-	WIN_RESULTS.document.writeln("<tr align=right><td>" +time.toFixed(3)+"</td><td>" + opty[0][1].toFixed(3) + "</td></tr>");
+	//WIN_RESULTS.document.writeln("<tr align=right><td>0.000</td><td>0.000</td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" +time.toFixed(2)+"</td><td>0.000</td></tr>");
+	WIN_RESULTS.document.writeln("<tr align=right><td>" + time.toFixed(2) + "</td><td>" + opty[0][1].toFixed(3) + "</td></tr>");
 	time+=opt;
 	for (var i=1;i<opty.length;i++) {
 		if(opty[i][1]!=opty[i-1][1]){

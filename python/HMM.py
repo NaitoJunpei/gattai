@@ -1,3 +1,18 @@
+##########
+# HMM.pyを実行するには、matplotlib、numpy、pandasライブラリが必要です
+
+# 使い方
+# HMM.pyを、パスが通っているフォルダに置き、
+# import HMM
+# をすると、ファイル内の関数が、HMM.(関数名)の形で実行可能になります。
+
+# ユーザーが使用するのはHMM関数のみで十分です。
+# HMM関数は、spike列を引数に取ります。
+# spike列の形式は、list、numpy.arrayなどが利用可能です。
+# 隠れマルコフモデルを使ってパラメータを推測し、グラフを描画します。
+# 値を返しません。
+##########
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -277,7 +292,7 @@ def HMM_M_step(vec_Xi, mat_A, vec_lambda, vec_pi, mat_Gamma, mat_Xi) :
 
     res = [vec_pi_new, vec_lambda_new, mat_A_new]
     return res
-
+n
 def HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi) :
     mat_emission  = get_mat_emission(vec_Xi, vec_lambda)
     num_of_states = len(mat_A)
