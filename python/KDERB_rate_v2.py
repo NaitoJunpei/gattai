@@ -3,9 +3,9 @@ import numpy as np
 import numpy.fft as fft
 import math
 
-# y, t, optw, W, C, y95b, y95u, yb = KDERF(spike_times)
+# y, t, optw, W, C, y95b, y95u, yb = KDERB(spike_times)
 
-# Function KDERF returns an optimized kernel density estimate using a Gauss kernel function.
+# Function KDERB returns an optimized kernel density estimate using a Gauss kernel function.
 
 # Input arguments:
 # spike_times: sample data list or array.
@@ -52,7 +52,7 @@ import math
 # y is a time hisogram representing the density of spikes.
 
 
-def KDERF(spike_times) :
+def KDERB(spike_times) :
     spike_times = np.array(sorted(spike_times))
     max_value = max(spike_times)
     min_value = min(spike_times)
@@ -139,7 +139,7 @@ def KDERF(spike_times) :
 
     y = y * len(spike_times)
 
-    drawKDE(y, tin, y95b, y95u)
+    drawKDERB(y, tin, y95b, y95u)
 
     return y, tin, optw, W, C, y95b, y95u, yb
         
@@ -214,7 +214,7 @@ def nextpow2(n) :
 
         return m
     
-def drawKDE(y, t, y95b, y95u) :
+def drawKDERB(y, t, y95b, y95u) :
     plt.stackplot(t, y)
     plt.ylim(ymin = 0)
     plt.show()
