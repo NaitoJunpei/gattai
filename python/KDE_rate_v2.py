@@ -3,6 +3,54 @@ import numpy as np
 import numpy.fft as fft
 import math
 
+# y, t, optw, W, C, y95b, y95u, yb = KDE(spike_times)
+
+# Function KDE returns an optimized kernel density estimate using a Gauss kernel function.
+
+# Input arguments:
+# spike_times: sample data list or array.
+# Output aurguments:
+# y:  Estimated density
+# t:  Points at which estimation was computed.
+#     The same as tin if tin is provided.
+#     (If the sampling resolution of tin is smaller than the sampling
+#     resolution of the data, spike_times, the estimation was  done at
+#     smaller number of points than t. The results, t and y, are obtained
+#     by interpolating the low resolution sampling points.)
+# tw: Optimal kernel bandwidth.
+#     Kernel bandwidths examined.
+#     Cost function of W.
+# y95b, y95u:
+#     Bootstrap confidence intervals.
+# yb: Bootstrap samples.
+
+# Optimization principle:
+# The optimal bandwidth is obtained as a minimizer of the formula,
+# sum_{i, j} \int k(x - x_i) k(x - x_j) dx - 2 sum_{i~=j} k(x_i - x_j),
+# where k(x) is the kernel function, according to
+
+# Hideaki Shimazaki and Shigeru Shinomoto
+# Kernel Bandwidth Optimization in Spike Rate Estimation
+# Journal of Computational Neuroscience 2010
+# http://dx.doi.org/10.1007/s10827-009-0180-4
+
+# The above optimization is based on a principle of minimizing
+# expected L2 loss function between the kernel estimate and an
+# unknown underlying density function. An assumption is merely
+# that samples are drawn from the density independently each other.
+
+# For more information, please visit
+# http://2000.jukuin.keio.ac.jp/shimazaki/res/kernel.html
+
+# See also SSVKERNEL, SSHIST
+
+# Hideaki Shimazaki
+# http://2000.jukuin.keio.ac.jp/Shimazaki
+
+# (New correction in version 1)
+# y-axis was multiplied by the number of data, so that
+# y is a time hisogram representing the density of spikes.
+
 def KDE(spike_times) :
     spike_times = np.array(sorted(spike_times))
     max_value = max(spike_times)
