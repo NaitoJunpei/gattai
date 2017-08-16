@@ -38,7 +38,6 @@ SN = 10;                    % # of partitioning positions for shift average
 Lv = Calc_Lv( spike_time ); % Lv of the spike train
 
 spike_time = horzcat(spike_time, spike_time + offset - onset);
-disp(spike_time);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Computing the cost function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
