@@ -289,7 +289,7 @@ function y = fftkernel(x,w)
 % Output argument
 % y: 	Smoothed signal.
 %
-% JULY 7/5, 2017 Author Kazuki Nakamura
+% MAY 5/23, 2012 Author Hideaki Shimazaki
 % RIKEN Brain Science Insitute
 % http://2000.jukuin.keio.ac.jp/shimazaki
 %
