@@ -64,7 +64,7 @@ def KDERB(spike_times) :
     tin = np.linspace(min_value, max_value, min(math.ceil(T / dt_samp), 1.0 * 10 ** 3))
     spike_ab = spike_times[np.nonzero((spike_times >= min(tin)) * (spike_times <= max(tin)))]
 
-    dt = min(diff_spike)
+    dt = min(tin)
 
     y_hist = np.histogram(spike_ab, np.append(tin, max_value) - dt / 2)[0]
     L = len(y_hist)
@@ -181,7 +181,7 @@ def fftkernel(x, w) :
     # Output argument
     # y : Smoothed signal.
     #
-    # JULY 7 / 5, 2017 Author Kazuki Nakamura
+    # MAY 5 / 23, 2012 Author Hideaki Shimazaki
     # RIKEN Brain Science Insitute
     # http://2000.jukuin.keio.ac.jp/shimazaki
     # 
