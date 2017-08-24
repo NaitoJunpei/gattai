@@ -16,6 +16,8 @@ TypeError: can only concatenate list (not "float") to list
 
 エラーメッセージここまで
 
+SS: コード修正 内藤 20170824
+
 (B) OS：動作確認 20170823
 
 
