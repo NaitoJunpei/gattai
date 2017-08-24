@@ -20,10 +20,11 @@ import math
 import numpy as np
 
 def SS(spike_times) :
-    max_value = max(spike_times)
-    min_value = min(spike_times)
-    onset     = min_value - 0.001 * (max_value - min_value)
-    offset    = max_value + 0.001 * (max_value - min_value)
+    spike_times = np.array(spike_times)
+    max_value   = max(spike_times)
+    min_value   = min(spike_times)
+    onset       = min_value - 0.001 * (max_value - min_value)
+    offset      = max_value + 0.001 * (max_value - min_value)
 
     for bin_num in range(1, 500) :
         cost = cost_av(spike_times, onset, offset, bin_num, 10)
