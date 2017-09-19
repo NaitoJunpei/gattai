@@ -99,5 +99,4 @@ def drawBRE(spike_times, kalman) :
         xaxis.append((spike_times[i] + spike_times[i + 1]) / 2)
 
     plt.stackplot(xaxis, yaxis)
-    plt.ylim(ymin = -10)
     plt.show()
