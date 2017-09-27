@@ -45,7 +45,6 @@ def OS(spike_times) :
             cost_min        = cost
             optimal_bin_num = bin_num
 
-    print(optimal_bin_num)
     drawOS(spike_times, optimal_bin_num)
 
 

@@ -22,15 +22,24 @@ def HMM(spike_times) :
     spike_times = np.array(list(spike_times))
     max_value   = max(spike_times)
     min_value   = min(spike_times)
-    bin_width   = (max_value - min_value) / len(spike_times)
+    bin_width   = (max_value - min_value) / len(spike_times) * 5
 
     rate_hmm = get_hmm_ratefunc(spike_times, bin_width, max_value, min_value)
 
     drawHMM(spike_times, rate_hmm)
 
+####
+# 隠れマルコフモデルで推定した値の描画を行います。
+
+# 引数
+# spike_times: スパイク列
+# rate_hmm: 隠れマルコフモデルで推定した値
+
+# 返り値
+# なし
+####
+
 def drawHMM(spike_times, rate_hmm) :
-    # xaxis = rate_hmm[:, 0]
-    # yaxis = rate_hmm[:, 1]
     xaxis = [rate_hmm[0, 0]]
     yaxis = [rate_hmm[0, 1]]
     tempx_old = tempx = rate_hmm[0, 0]
@@ -133,6 +142,22 @@ def get_vec_Xi(vec_spkt, bin_width) :
 
     return vec_Xi
 
+
+####
+# HMM_E_step関数
+# 隠れマルコフモデルの期待値を計算するステップです。
+
+# 引数
+# vec_Xi: ベクトルX_i、numpy arrayクラスで表現します。
+# mat_A: 行列A、numpy arrayクラスで表現します。
+# vec_lambda: ベクトルラムダ、numpy arrayクラスで表現します。
+# vec_pi: ベクトルパイ、numpy arrayクラスで表現します。
+
+# 返り値
+# mat_Gamma: 
+# mat_Xi: 
+####
+
 def HMM_E_step(vec_Xi, mat_A, vec_lambda, vec_pi) :
     mat_emission      = get_mat_emission(vec_Xi, vec_lambda)
     vec_C, mat_alpha  = get_alpha_C(mat_A, vec_pi, mat_emission)
@@ -219,12 +244,7 @@ def get_Gamma_Xi(mat_A, mat_emission, mat_alpha, mat_beta, vec_C) :
     num_of_obs    = len(mat_emission)
 
     mat_Gamma_buf = np.zeros([num_of_obs, num_of_states])
-    # for n in range(0, num_of_obs) :
-    #     mat_Gamma_buf_n = mat_Gamma_buf[n]
-    #     mat_alpha_n     = mat_alpha[n]
-    #     mat_beta_n      = mat_beta[n]
-    #     for i in range(0, num_of_states) :
-    #         mat_Gamma_buf_n[i] = mat_alpha_n[i] * mat_beta_n[i]
+
     mat_Gamma_buf = mat_alpha * mat_beta
 
 
@@ -246,13 +266,16 @@ def get_Gamma_Xi(mat_A, mat_emission, mat_alpha, mat_beta, vec_C) :
 
     return res
 
+####
+# HMM_M_step関数
+# 隠れマルコフモデルの、尤度最大化ステップです。
+####
+
 def HMM_M_step(vec_Xi, mat_A, vec_lambda, vec_pi, mat_Gamma, mat_Xi) :
     num_of_states = len(mat_A)
     num_of_obs    = len(vec_Xi)
 
     pi_denom = 0.0
-    # for mat_Gamma_0_k in mat_Gamma[0] :
-    #     pi_denom += mat_Gamma_0_k
  
     pi_denom += sum(mat_Gamma[0])
 
@@ -292,7 +315,7 @@ def HMM_M_step(vec_Xi, mat_A, vec_lambda, vec_pi, mat_Gamma, mat_Xi) :
 
     res = [vec_pi_new, vec_lambda_new, mat_A_new]
     return res
-n
+
 def HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi) :
     mat_emission  = get_mat_emission(vec_Xi, vec_lambda)
     num_of_states = len(mat_A)
