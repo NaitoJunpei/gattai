@@ -1,4 +1,4 @@
-function  OptN  = hist_np_v1( spike_time )
+function  OptN  = hist_np( spike_time )
 %Function 'hist_np' returns the optimal number of bins of time-histogram. 
 %
 %Input argument
@@ -22,53 +22,46 @@ if isrow(spike_time) == 0
     spike_time = spike_time';
 end
 
-spike_time = reshape(spike_time, 1, numel(spike_time));
-
 min_sp = min(spike_time);    % the time of the first spike
 max_sp = max(spike_time);    % the time of the last spike
 
-onset = min_sp - 0.001 * (max_sp - min_sp);
-offset = max_sp + 0.001 * (max_sp - min_sp);
-
 N = [1:200];                % # of bins vector
-D = (offset-onset)./N;     % bin size  vector
+D = (max_sp-min_sp)./N;     % bin size  vector
+cost = zeros(1,length(N));  % cost function vector 
 
-SN = 10;                    % # of partitioning positions for shift average
+SN = 30;                    % # of partitioning positions for shift average
 
 Lv = Calc_Lv( spike_time ); % Lv of the spike train
 
-spike_time = horzcat(spike_time, spike_time + offset - onset);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Computing the cost function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Cost = zeros(length(N), SN);
 for i=1:length(N)
-    shift = linspace(0,D(i),SN+1);
+    shift = linspace(0,D(i),SN);
     for p = 1 : SN
         
-       edges = linspace(min_sp+shift(p),...
-                        max_sp+shift(p),N(i)+1);   % Bin edges
+       edges = linspace(min_sp+shift(p)-D(i)/2,...
+                        max_sp+shift(p)-D(i)/2,N(i)+1);   % Bin edges
 
-       %edges(1)= -inf;
-       %edges(N(i)+1)= inf;
+       edges(1)= -inf;
+       edges(N(i)+1)= inf;
        
        k=histc(spike_time,edges); 
        k=k(1:N(i));% # of spikes in each bin (Step 1 in ref[1] pp 3129-3130)
        
        f = arrayfun(@est_fano,k,ones(1,N(i))*2.0*Lv/(3.0-Lv)); % fano factor of each bin (Step 2 in ref[1] pp 3129-3130)
        
-       Cost(i, p)= ( mean(2.0*f.*k)-var(k,1))/ D(i)^2; % cost function for # of bins = N(i) (Step 3,4 in ref[1] pp 3129-3130)
+       Cost(i)= ( mean(2.0*f.*k)-var(k,1))/ D(i)^2; % cost function for # of bins = N(i) (Step 3,4 in ref[1] pp 3129-3130)
 
     end
 end
 
-C = mean(Cost, 2);
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Minimizing the cost function (Step 5 in ref[1] pp 3129-3130)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[~,OptN] = min(C);
+[~,OptN] = min(Cost);
 %hist(spike_time,OptN);
+
 
 end
 
@@ -92,4 +85,3 @@ else
     f = est_fano;
 end
 end
-
