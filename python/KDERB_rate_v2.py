@@ -61,17 +61,21 @@ def KDERB(spike_times) :
     diff_spike = np.array(sorted(np.diff(spike_times)))
     dt_samp = diff_spike[np.nonzero(diff_spike)][0]
     
-    tin = np.linspace(min_value, max_value, min(math.ceil(T / dt_samp), 1.0 * 10 ** 3))
+    tin = np.linspace(min_value, max_value, min(math.ceil(T / dt_samp), 1e3))
     spike_ab = spike_times[np.nonzero((spike_times >= min(tin)) * (spike_times <= max(tin)))]
+    print(spike_ab)
 
-    dt = min(tin)
+    # dt = min(tin)
+    dt = min(np.diff(tin))
 
     y_hist = np.histogram(spike_ab, np.append(tin, max_value) - dt / 2)[0]
+    # y_hist = np.histogram(spike_ab, tin - dt / 2)[0]
     L = len(y_hist)
     N = sum(y_hist)
+    print(N)
     y_hist = y_hist / (N * dt)
 
-    Wmin = dt
+    Wmin = 2 * dt
     Wmax = 1 * (max_value - min_value)
 
     tol = 1e-5
@@ -83,8 +87,10 @@ def KDERB(spike_times) :
     c1 = (phi - 1) * a + (2 - phi) * b
     c2 = (2 - phi) * a + (phi - 1) * b
 
-    f1 = CostFunction(y_hist, N, math.exp(c1), dt)[0]
-    f2 = CostFunction(y_hist, N, math.exp(c2), dt)[0]
+    f1 = CostFunction(y_hist, N, logexp(c1), dt)[0]
+    f2 = CostFunction(y_hist, N, logexp(c2), dt)[0]
+
+    print(f1, f2)
 
     k = 0
     W = [0] * 20
@@ -119,12 +125,13 @@ def KDERB(spike_times) :
             y = yh2 / sum(yh2 * dt)
 
         k += 1
+        ####print(f1, f2)
 
     nbs = int(1e3)
     yb = np.zeros([nbs, len(tin)])
 
     for i in range(0, nbs) :
-        idx = [math.ceil(np.random.random() * N) for i in range(0, N)]
+        idx = [math.ceil(np.random.random() * N) for j in range(0, N)]
         xb = spike_ab[idx]
         y_histb = np.histogram(xb, np.append(tin, max_value) - dt / 2)[0] / (dt * N)
 
@@ -150,18 +157,32 @@ def sort(mat) :
 
     return mat
 
+# def logexp(x) :
+#     return math.log(1 + math.exp(x))
+
 def logexp(x) :
-    return math.log(1 + math.exp(x))
+    if x < 1e2 :
+        return math.log(1 + math.exp(x))
+    if x >= 1e2 :
+        return x
+
+# def ilogexp(x) :
+#     return math.log(math.exp(x) - 1)
 
 def ilogexp(x) :
-    return math.log(math.exp(x) - 1)
+    if x < 1e2 :
+        return math.log(math.exp(x) - 1)
+    if x >= 1e2 :
+        return x
+
+    
 
 def CostFunction(y_hist, N, w, dt) :
-    yh = fftkernel(y_hist, w / dt) # density
+    yh = fftkernel(list(y_hist), w / dt) # density
     halflen = math.ceil(len(y_hist) / 2)
     remlen = len(y_hist) - halflen
-    addleft = fftkernel(np.r_[np.zeros(remlen), y_hist[0:halflen]], w / dt)
-    addright = fftkernel(np.r_[y_hist[halflen : len(y_hist)], np.zeros(remlen)], w / dt)
+    addleft = fftkernel(list(np.r_[np.zeros(remlen), y_hist[0:halflen]]), w / dt)
+    addright = fftkernel(list(np.r_[y_hist[halflen : len(y_hist)], np.zeros(remlen)]), w / dt)
     yh = yh + np.r_[np.fliplr([addleft[0:halflen]])[0], np.zeros(remlen)] + np.r_[np.zeros(remlen), np.fliplr([addright[halflen:len(addright)]])[0]]
 
     # formula for density
@@ -190,13 +211,13 @@ def fftkernel(x, w) :
     # y is a time histogram representing the density of spikes.
 
     L = len(x)
-    Lmax = max(1,0, math.floor(L + 3.0 * w))
+    Lmax = max(1.0, math.floor(L + 3.0 * w))
     n = int(2 ** (nextpow2(Lmax)))
 
     X = fft.fft(x, n)
 
     f = (np.array(range(0, n)) + 0.0) / n
-    f = np.r_[-f[range(0, int(n / 2) + 1)], f[range(int(n / 2), 1, -1)]]
+    f = np.r_[-f[range(0, int(n / 2) + 1)], f[range(int(n / 2) - 1, 0, -1)]]
 
     K = [math.exp(-0.5 * ((w * 2 * math.pi * f_i) ** 2)) for f_i in f]
 

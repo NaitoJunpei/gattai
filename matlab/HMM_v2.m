@@ -36,8 +36,9 @@ end
 %sub function
 
 function vec_Xi = get_vec_Xi(vec_spkt, bin_width)
-vec_Xi = zeros(length(vec_spkt),1);
+%%%%vec_Xi = zeros(length(vec_spkt),1);
 bin_num=ceil(vec_spkt(length(vec_spkt))/bin_width);
+vec_Xi = zeros(bin_num, 1)
 for i=1:length(vec_spkt)
     bin_id=fix(vec_spkt(i)/bin_width)+1;
     if bin_id<bin_num
@@ -291,7 +292,9 @@ vec_hidden=HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi);
 
 rate_func=zeros(length(vec_Xi),2);
 
-c_time=0.0;
+%%%%c_time=0.0;
+onset = spike_time(1) - 0.001 * (spike_time(length(spike_time)) - spike_time(1));
+c_time = onset
 for n=1:length(vec_Xi)
     state_id=vec_hidden(n);
     rate_func(n,1)=round(c_time*100)/100.0;

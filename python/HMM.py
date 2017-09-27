@@ -22,7 +22,7 @@ def HMM(spike_times) :
     spike_times = np.array(list(spike_times))
     max_value   = max(spike_times)
     min_value   = min(spike_times)
-    bin_width   = (max_value - min_value) / len(spike_times)
+    bin_width   = (max_value - min_value) / len(spike_times) * 5
 
     rate_hmm = get_hmm_ratefunc(spike_times, bin_width, max_value, min_value)
 

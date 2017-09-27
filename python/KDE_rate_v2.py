@@ -60,17 +60,17 @@ def KDE(spike_times) :
     diff_spike = np.array(sorted(np.diff(spike_times)))
     dt_samp = diff_spike[np.nonzero(diff_spike)][0]
     
-    tin = np.linspace(min_value, max_value, min(math.ceil(T / dt_samp), 1.0 * 10 ** 3))
+    tin = np.linspace(min_value, max_value, min(math.ceil(T / dt_samp), 1e3))
     spike_ab = spike_times[np.nonzero((spike_times >= min(tin)) * (spike_times <= max(tin)))]
 
-    dt = min(tin)
+    dt = min(np.diff(tin))
 
     y_hist = np.histogram(spike_ab, np.append(tin, max_value) - dt / 2)[0]
     L = len(y_hist)
     N = sum(y_hist)
     y_hist = y_hist / (N * dt)
 
-    Wmin = dt
+    Wmin = 2 * dt
     Wmax = 1 * (max_value - min_value)
 
     tol = 1e-5
@@ -82,10 +82,8 @@ def KDE(spike_times) :
     c1 = (phi - 1) * a + (2 - phi) * b
     c2 = (2 - phi) * a + (phi - 1) * b
 
-    print(c1, dt)
-
-    f1 = CostFunction(y_hist, N, math.exp(c1), dt)[0]
-    f2 = CostFunction(y_hist, N, math.exp(c2), dt)[0]
+    f1 = CostFunction(y_hist, N, logexp(c1), dt)[0]
+    f2 = CostFunction(y_hist, N, logexp(c2), dt)[0]
 
     k = 0
     W = [0] * 20
@@ -107,7 +105,6 @@ def KDE(spike_times) :
             y = yh1 / sum(yh1 * dt)
         else :
             a = c1
-            print(c2)
             c1 = c2
 
             c2 = (2 - phi) * a + (phi - 1) * b
@@ -152,11 +149,23 @@ def sort(mat) :
 
     return mat
 
+# def logexp(x) :
+#     return math.log(1 + math.exp(x))
+
 def logexp(x) :
-    return math.log(1 + math.exp(x))
+    if x < 1e2 :
+        return math.log(1 + math.exp(x))
+    if x >= 1e2 :
+        return x
+
+# def ilogexp(x) :
+#     return math.log(math.exp(x) - 1)
 
 def ilogexp(x) :
-    return math.log(math.exp(x) - 1)
+    if x < 1e2 :
+        return math.log(math.exp(x) - 1)
+    if x >= 1e2 :
+        return x
 
 def CostFunction(y_hist, N, w, dt) :
     yh = fftkernel(y_hist, w / dt) # density
