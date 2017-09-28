@@ -32,13 +32,15 @@ offset = x(length(x)) + 0.001 * (x(length(x)) - x(1));
 optw = (offset-onset)/(length(x)-1) * 5;
 rate_func = get_hmm_ratefunc(x, optw);
 
+drawHMM(rate_func)
+
 end
 %sub function
 
 function vec_Xi = get_vec_Xi(vec_spkt, bin_width)
 %%%%vec_Xi = zeros(length(vec_spkt),1);
 bin_num=ceil(vec_spkt(length(vec_spkt))/bin_width);
-vec_Xi = zeros(bin_num, 1)
+vec_Xi = zeros(bin_num, 1);
 for i=1:length(vec_spkt)
     bin_id=fix(vec_spkt(i)/bin_width)+1;
     if bin_id<bin_num
@@ -294,7 +296,7 @@ rate_func=zeros(length(vec_Xi),2);
 
 %%%%c_time=0.0;
 onset = spike_time(1) - 0.001 * (spike_time(length(spike_time)) - spike_time(1));
-c_time = onset
+c_time = onset;
 for n=1:length(vec_Xi)
     state_id=vec_hidden(n);
     rate_func(n,1)=round(c_time*100)/100.0;
@@ -302,3 +304,31 @@ for n=1:length(vec_Xi)
     c_time=c_time+bin_width;
 end
 end
+
+function drawHMM(rate_func)
+x = rate_func(:, 1);
+y = rate_func(:, 2);
+
+ind = 1;
+x_new(ind) = x(1);
+y_new(ind) = min(y);
+ind = ind + 1;
+x_new(ind) = x(1);
+y_new(ind) = y(1);
+ind = ind + 1;
+
+for i = 2 : length(y)
+    if y(i - 1) ~= y(i)
+        t = (x(i - 1) + x(i)) / 2;
+        x_new(ind) = t;
+        y_new(ind) = y(i - 1);
+        ind = ind + 1;
+        x_new(ind) = t;
+        y_new(ind) = y(i);
+        ind = ind + 1;
+    end
+end
+
+plot(x_new, y_new)
+end
+
