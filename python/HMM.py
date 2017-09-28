@@ -22,11 +22,15 @@ def HMM(spike_times) :
     spike_times = np.array(list(spike_times))
     max_value   = max(spike_times)
     min_value   = min(spike_times)
-    bin_width   = (max_value - min_value) / len(spike_times) * 5
+    onset       = min_value - 0.001 * (max_value - min_value)
+    offset      = max_value + 0.001 * (max_value - min_value)
+    bin_width   = (offset - onset) / len(spike_times) * 5
 
     rate_hmm = get_hmm_ratefunc(spike_times, bin_width, max_value, min_value)
 
     drawHMM(spike_times, rate_hmm)
+
+    return rate_hmm
 
 ####
 # 隠れマルコフモデルで推定した値の描画を行います。
@@ -325,6 +329,7 @@ def HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi) :
 
     for j in range(0, num_of_states) :
         mat_hs_seq[j][0] = j
+        print(vec_pi[j], mat_emission[0][j])
         vec_logp_seq[j]  = math.log(vec_pi[j] * mat_emission[0][j]) / math.log(10)
 
     for n in range(1, num_of_obs) :
