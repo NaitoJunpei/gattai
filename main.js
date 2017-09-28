@@ -365,11 +365,14 @@ function DrawGraph_Kernel12(spike_time){
 	wrap.select("svg").remove();	// 初期化
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
 	
-	var opt = Kernel(spike_time);
+	//var opt = Kernel(spike_time);
 	var opty1 = new Array();
 	var opty2 = new Array();
-	var maxy = kern12(spike_time, opt, opty1, opty2);
-
+	//var maxy = kern12(spike_time, opt, opty1, opty2);
+	var res = kernel_rate(spike_time,opty1);
+	var maxy = res[0];
+	var opt = res[1];
+	
 	var xy1 = new Array();
 	for (var i = 0;i<res_graph;i++) {
 		xy1[i] = [x_base + Math.round(i*width_graph/(res_graph-1)), height_graph - Math.round(height_graph*opty1[i]/(1.2*maxy))];
@@ -457,8 +460,377 @@ function DrawGraph_Bayes(spike_time){
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 }
 
+//
+//FFT Module without "use asm" for comparison
+//
+function FftModuleNoAsm(stdlib, foreign, heap) {
+	//"use asm";
+	var FLOAT64 = new stdlib.Float64Array(heap);
+	var sqrt=stdlib.Math.sqrt;
+	var sz=0;
+	function setup(n) {
+		n=n|0;
+		sz=n;
+	}
+	function fft(normalize) {
+		normalize=normalize|0;
+		var m=0, mh=0, i=0, j=0, k=0;
+		var wr=0.0, wi=0.0, xr=0.0, xi=0.0, w=0.0, r=0.0;
+		var tcnt=0;
+		for(mh=1;(m=mh<<1)<=(sz|0);mh=m) {
+			for(i=0;(i|0)<(mh|0);i=(i+1)|0) {
+				// revised
+				// wr=+FLOAT64[(sz*16+tcnt)>>3];
+				// wi=+FLOAT64[(sz*16+tcnt+8)>>3];
+				wr+=FLOAT64[(sz*16+tcnt)>>3];
+				wi+=FLOAT64[(sz*16+tcnt+8)>>3];
+				tcnt=(tcnt+16)|0;
+				for(j=i;(j|0)<(sz|0);j=(j+m)|0) {
+					k=(j+mh)|0;
+					xr=wr*FLOAT64[k<<3>>3]-wi*FLOAT64[(sz+k)<<3>>3];
+					xi=wr*FLOAT64[(sz+k)<<3>>3]+wi*FLOAT64[k<<3>>3];
+					FLOAT64[k<<3>>3] = +FLOAT64[j<<3>>3]-xr;
+					FLOAT64[(sz+k)<<3>>3] = +FLOAT64[(sz+j)<<3>>3]-xi;
+					FLOAT64[j<<3>>3] = +FLOAT64[j<<3>>3] + xr;
+					FLOAT64[(sz+j)<<3>>3] = +FLOAT64[(sz+j)<<3>>3] + xi;
+				}
+			}
+		}
+		if(normalize) {
+			r = +(1.0/+(sz|0));
+			for(i=0;(i|0)<(sz|0);i=(i+1)|0) {
+				FLOAT64[i<<3>>3]=+FLOAT64[i<<3>>3]*r;
+				FLOAT64[(sz+i)<<3>>3]=+FLOAT64[(sz+i)<<3>>3]*r;
+			}
+		}
+	}
+	function mag() {
+		var i=0,j=0;
+		for(i=0;(i|0)<(sz|0);i=(i+1)|0) {
+			j=(sz*2-i-1)|0;
+			FLOAT64[i<<3>>3]=sqrt(FLOAT64[i<<3>>3]*FLOAT64[i<<3>>3]+FLOAT64[j<<3>>3]*FLOAT64[j<<3>>3]);
+		}
+	}
+	return {
+		setup:setup,
+		fft:fft,
+		mag:mag
+	};
+}
+//
+//FFT Module with "use asm"
+//
+function FftModuleAsm(stdlib, foreign, heap) {
+	"use asm";
+	var FLOAT64 = new stdlib.Float64Array(heap);
+	var sqrt=stdlib.Math.sqrt;
+	var sz=0;
+	function setup(n) {
+		n=n|0;
+		sz=n;
+	}
+	function fft(normalize) {
+		normalize=normalize|0;
+		var m=0, mh=0, i=0, j=0, k=0;
+		var wr=0.0, wi=0.0, xr=0.0, xi=0.0, w=0.0, r=0.0;
+		var tcnt=0;
+		for(mh=1;(m=mh<<1)<=(sz|0);mh=m) {
+			for(i=0;(i|0)<(mh|0);i=(i+1)|0) {
+				// revised
+				// wr=+FLOAT64[(sz*16+tcnt)>>3];
+				// wi=+FLOAT64[(sz*16+tcnt+8)>>3];
+				wr+=FLOAT64[(sz*16+tcnt)>>3];
+				wi+=FLOAT64[(sz*16+tcnt+8)>>3];
+				tcnt=(tcnt+16)|0;
+				for(j=i;(j|0)<(sz|0);j=(j+m)|0) {
+					k=(j+mh)|0;
+					xr=wr*FLOAT64[k<<3>>3]-wi*FLOAT64[(sz+k)<<3>>3];
+					xi=wr*FLOAT64[(sz+k)<<3>>3]+wi*FLOAT64[k<<3>>3];
+					FLOAT64[k<<3>>3] = +FLOAT64[j<<3>>3]-xr;
+					FLOAT64[(sz+k)<<3>>3] = +FLOAT64[(sz+j)<<3>>3]-xi;
+					FLOAT64[j<<3>>3] = +FLOAT64[j<<3>>3] + xr;
+					FLOAT64[(sz+j)<<3>>3] = +FLOAT64[(sz+j)<<3>>3] + xi;
+				}
+			}
+		}
+		if(normalize) {
+			r = +(1.0/+(sz|0));
+			for(i=0;(i|0)<(sz|0);i=(i+1)|0) {
+				FLOAT64[i<<3>>3]=+FLOAT64[i<<3>>3]*r;
+				FLOAT64[(sz+i)<<3>>3]=+FLOAT64[(sz+i)<<3>>3]*r;
+			}
+		}
+	}
+	function mag() {
+		var i=0,j=0;
+		for(i=0;(i|0)<(sz|0);i=(i+1)|0) {
+			j=(sz*2-i-1)|0;
+			FLOAT64[i<<3>>3]=sqrt(FLOAT64[i<<3>>3]*FLOAT64[i<<3>>3]+FLOAT64[j<<3>>3]*FLOAT64[j<<3>>3]);
+		}
+	}
+	return {
+		setup:setup,
+		fft:fft,
+		mag:mag
+	};
+}
+function FftModule(sz,asm) {
+	var i,j,k;
+	this.sz=sz;
+	this.bufsz=sz*32;
+	if(this.bufsz<4096)
+		this.bufsz=4096;
+	this.heap=new ArrayBuffer(this.bufsz);
+	this.foreign=new ArrayBuffer(4096);
+	this.flt64=new Float64Array(this.heap);
+	if(asm)
+		this.fftasm=FftModuleAsm(window,this.foreign,this.heap);
+	else
+		this.fftasm=FftModuleNoAsm(window,this.foreign,this.heap);
+	this.fftasm.setup(sz);
+	var t,th=Math.PI;
+	for(i=1,j=0;i<sz;i<<=1) {
+		t=0.0;
+		for(k=0;k<i;++k,j+=2) {
+			t+=th;
+			this.flt64[sz*2+j]=Math.cos(t);
+			this.flt64[sz*2+j+1]=Math.sin(t);
+		}
+		th*=0.5;
+	}
+	this.bitrev=new Array(sz);
+	this.bitrev[0]=0;
+	this.bitrev[sz-1]=sz-1;
+	for(j=1,i=0;j<sz-1;++j) {
+		for(var k=sz>>1;k>(i^=k);k>>=1)
+			;
+		this.bitrev[j]=i;
+	}
+	this.fft=function(real,imag,normalize,asm) {
+		var i;
+		for(i=0;i<this.sz;++i) {
+			this.flt64[this.bitrev[i]]=real[i];
+			this.flt64[this.sz+this.bitrev[i]]=imag[i];
+		}
+		this.fftasm.fft(normalize);
+		for(i=0;i<this.sz;++i) {
+			real[i]=this.flt64[i];
+			imag[i]=this.flt64[this.sz+i];
+		}
+	}
+	this.fftmag=function(real,imag) {
+		var i;
+		for(i=0;i<this.sz;++i) {
+			this.flt64[this.bitrev[i]]=real[i];
+			this.flt64[this.sz+this.bitrev[i]]=imag[i];
+		}
+		this.fftasm.fft(1);
+		this.fftasm.mag();
+		for(i=0;i<this.sz;++i) {
+			real[i]=this.flt64[i];
+		}
+	}
+}
+/* fft method */
+
+function kernel_rate(spike_time, y1){
+
+    var T = spike_time[spike_time.length-1] - spike_time[0];
+    var dt_samp = spike_time[1]-spike_time[0];
+    for (var i=0;i<spike_time.length-1;i++){
+    	if(dt_samp>spike_time[i+1]-spike_time[i]) dt_samp = spike_time[i+1]-spike_time[i];
+    }
+    var t_num=1000;
+    if(Math.ceil(T/dt_samp)<t_num){
+    	t_num = Math.ceil(T/dt_samp);
+    }
+    var t = new Array();
+    t[0] = spike_time[0]
+    for(var i=0; i<t_num-1;i++){
+    	t[i+1]=t[i]+T/(t_num-1);
+    }
+	var dt = t[1]-t[0];
+	for(var i=0;i<t.length-1;i++){
+		if(dt>t[i+1]-t[i]){
+			dt=t[i+1]-t[i];
+		}
+	}
+    var y_hist = new Array();
+    for(var i=0;i<t.length;i++){
+    	y_hist[i]=0;
+    }
+    for(var i=0;i<spike_time.length;i++){
+    	for(var j=0;j<t.length-1;j++){
+        	if(spike_time[i]>=t[j]-dt/2 && spike_time[i]<t[j+1]-dt/2) y_hist[j]++;
+    	}
+    	if(spike_time[i]>=t[t.length-1]-dt/2) y_hist[t.length-1]++;
+    }
+	var L = y_hist.length;
+	var N = 0;
+	for(var i=0;i<L;i++){
+		N+=y_hist[i];
+	}
+	for (var i=0;i<t.length;i++){
+		y_hist[i] = y_hist[i]/N/dt;   // density
+	}
+
+	var Wmin = 2*dt;
+	var Wmax = 1*(spike_time[spike_time.length-1] - spike_time[0]);
+
+	var tol = Math.pow(10,-5); 
+	var phi = (Math.sqrt(5) + 1)/2;        //golden ratio
+
+	// a = Wmin; b = Wmax;
+	var a=ilogexp(Wmin);
+	var b=ilogexp(Wmax);
+
+	var c1 = (phi-1)*a + (2-phi)*b;
+	var c2 = (2-phi)*a + (phi-1)*b;
+	var f1 = kernel_cost_function(y_hist,N,logexp(c1),dt);
+	var f2 = kernel_cost_function(y_hist,N,logexp(c2),dt);
+
+	var k = 1;
+	var W = new Array();
+	var C = new Array();
+	var optw;
+	while (Math.abs(b-a) > tol*(Math.abs(c1)+Math.abs(c2)) && k <= 20){
+		if (f1 < f2) {   
+	        b = c2;
+	        c2 = c1;
+
+	        c1 = (phi - 1)*a + (2 - phi)*b;
+	        
+	        f2 = f1;
+	        f1 = kernel_cost_function(y_hist,N,logexp(c1),dt);
+	        
+	        // 170926 fix
+	        // W[k] = Math.log(1+Math.exp(c1));
+	        W[k] = logexp(c1)
+	        
+	        C[k] = f1;
+	        //var optw = Math.log(1+Math.exp(c1));
+	        optw = logexp(c1);
+	        //y = yh1./sum(yh1.*dt);  //make the final output a density
+		}else{
+	        a = c1;
+	        c1 = c2;
+	        
+	        c2 = (2 - phi)*a + (phi - 1)*b;
+	        
+	        f1 = f2;
+	        f2 = kernel_cost_function(y_hist,N,logexp(c2),dt);
+	        //yhの値が返ってこない なぜ？
+	        //W[k] = Math.log(1+Math.exp(c2));
+	        W[k] = logexp(c2);
+	        C[k] = f2;
+	        
+	        //var optw = Math.log(1+Math.exp(c2));
+	        optw = logexp(c2);
+	        //y = yh2./sum(yh2.*dt);
+		}
+	    k = k + 1;
+	}
+	var yh = new Array();
+	yh = fftkernel(y_hist,optw/dt)
+	var sum_yh = 0;
+	for(var i=0;i<yh.length;i++){
+		sum_yh += yh[i];
+	}
+	var maxy = yh[0]/sum_yh/dt;
+	for(var i=0;i<yh.length;i++){
+		y1[i] = yh[i]/sum_yh/dt;
+		if(maxy<y1[i]) maxy = y1[i];
+	}
+	var res = new Array(2);
+	res[0] = maxy;
+	res[1] = optw;
+	return res;
+}
+
+function kernel_cost_function(y_hist, N, w, dt){
+	var yh = fftkernel(y_hist,w/dt);  // density
+
+	var sumyh = 0;
+	for(var i=0;i<yh.length;i++){
+		sumyh += Math.pow(yh[i],2);
+	}
+	var sumyh_hist = 0;
+	for(var i=0;i<yh.length;i++){
+		sumyh_hist += yh[i]*y_hist[i];
+	}
+	
+	// formula for density
+	var C = sumyh*dt - 2* sumyh_hist*dt + 2*1/Math.sqrt(2*Math.PI)/w/N; 
+	C = C * N* N;
+	return C;
+}
+
+function fftkernel(x, width){
+	var L=x.length;
+	var Lmax = L+3*width;
+	var n=1;
+	while(n<Lmax){
+		n=n*2;
+	}
+	var imag=new Float64Array(n);
+	var real=new Float64Array(n);
+	for (var k=0;k<n;k++){
+		imag[k]=0;
+		real[k]=0;
+	}
+	for (var k=0;k<x.length;k++){
+		real[k]=x[k];
+	}
+	fftnoasm=new FftModule(n,false);
+	fftnoasm.fft(real,imag,0);
+	var f_old = new Array();
+	for (var k=0;k<real.length;k++){
+		f_old[k]=k/real.length;
+	}
+	var f = new Array();
+	var k=0;
+	for (;k<Math.ceil(real.length/2)+1;k++){
+		f[real.length-1-k]=f_old[k+1];
+		f[k]=-f_old[k];
+	}
+	var K = new Array();
+	for(var j=0;j<real.length;j++){
+		K[j]=Math.exp(-0.5*Math.pow(width*2*Math.PI*f[j],2));
+	}
+	var y_buf = new Array(real.length);
+	for(var j=0;j<real.length;j++){
+		y_buf[j] = real[j]*K[j];
+		imag[j] = imag[j]*K[j];
+	}
+	fftnoasm.fft(y_buf,imag,1);
+
+	return y_buf.slice(0,L);
+}
+
+function logexp(x){
+	var y = new Array();
+	if(x<100){
+		y = Math.log(1+Math.exp(x));
+	}else{
+		y = x;
+	}
+	return y;
+}
+
+function ilogexp(x){
+	// ilogexp = @(x) log(exp(x)-1);
+	var y = new Array();
+	if(x<100){
+		y = Math.log(Math.exp(x)-1);
+	}else{
+		y = x;
+	}
+	return y;
+}
+
 
 function kern12(spike_time, width, y1, y2) {
+	/*
 	var x = new Array(res_graph)
 	x[0] = onset;
 	
@@ -494,6 +866,53 @@ function kern12(spike_time, width, y1, y2) {
 		y2[i] = y1[i] + addNumber;
 		if(maxy<y2[i]) maxy=y2[i];
 	}
+*/
+	//////////////////
+		var L=spike_time.length;
+		var Lmax = L+3*width;
+		var n=1;
+		while(n<Lmax){
+			n=n*2;
+		}
+		var imag=new Float64Array(n);
+		var real=new Float64Array(n);
+		for (var k=0;k<n;k++){
+			imag[k]=0;
+			real[k]=0;
+		}
+		for (var k=0;k<spike_time.length;k++){
+			real[k]=spike_time[k];
+		}
+		fftnoasm=new FftModule(n,false);
+		fftnoasm.fft(real,imag,0);
+		var f_old = new Array();
+		for (var k=0;k<real.length;k++){
+			f_old[k]=k/real.length;
+		}
+		var f = new Array();
+		var k=0;
+		for (;k<Math.ceil(real.length/2)+1;k++){
+			f[real.length-1-k]=f_old[k+1];
+			f[k]=-f_old[k];
+		}
+		var K = new Array();
+		for(var j=0;j<real.length;j++){
+			K[j]=Math.exp(-0.5*Math.pow(width*2*Math.PI*f[j],2));
+		}
+		for(var j=0;j<real.length;j++){
+			y1[j] = real[j]*K[j];
+			imag[j] = imag[j]*K[j];
+		}
+		fftnoasm.fft(y1,imag,1);
+		document.data.spikes.value = y1;
+
+		var maxy = 0;
+		for(var i = 0;i<y1.length;i++){
+			if(maxy<y1[i]) maxy=y1[i];
+		}
+	
+
+	//////////////////
 	return maxy;
 }
 
@@ -660,7 +1079,6 @@ function kern2(spike_time, width, y) {
 		y[i] += addNumber;
 		if(maxy<y[i]) maxy=y[i];
 	}
-	console.log(y);
 	return maxy;
 }
 
