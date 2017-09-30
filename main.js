@@ -369,13 +369,12 @@ function DrawGraph_Kernel12(spike_time){
 	var opty1 = new Array();
 	var opty2 = new Array();
 	//var maxy = kern12(spike_time, opt, opty1, opty2);
-	var res = kernel_rate(spike_time,opty1);
+	var res = kernel_rate(spike_time,opty1,opty2);
 	var maxy = res[0];
 	var opt = res[1];
-	
 	var xy1 = new Array();
-	for (var i = 0;i<res_graph;i++) {
-		xy1[i] = [x_base + Math.round(i*width_graph/(res_graph-1)), height_graph - Math.round(height_graph*opty1[i]/(1.2*maxy))];
+	for (var i = 0;i<opty1.length;i++) {
+		xy1[i] = [x_base + Math.round(i*width_graph/(opty1.length-1)), height_graph - Math.round(height_graph*opty1[i]/(1.2*maxy))];
 	}
 	xy1.unshift([x_base, height_graph]);
 	xy1.push([x_base+width_graph, height_graph]);
@@ -394,8 +393,8 @@ function DrawGraph_Kernel12(spike_time){
 	var svg = wrap.append("svg").attr("width",x_base+width_graph).attr("height",height_graph);
 
 	var xy2 = new Array();
-	for (var i = 0;i<res_graph;i++) {
-		xy2[i] = [x_base + Math.round(i*width_graph/(res_graph-1)), height_graph - Math.round(height_graph*opty2[i]/(1.2*maxy))];
+	for (var i = 0;i<opty2.length;i++) {
+		xy2[i] = [x_base + Math.round(i*width_graph/(opty2.length-1)), height_graph - Math.round(height_graph*opty2[i]/(1.2*maxy))];
 	}
 	xy2.unshift([x_base, height_graph]);
 	xy2.push([x_base+width_graph, height_graph]);
@@ -459,181 +458,40 @@ function DrawGraph_Bayes(spike_time){
 	svg.append("path").attr("d", line(xy) ).attr("fill","#FFC0CB").attr("stroke","#DFA0AB");
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 }
+/* dft method */
+function org_dft(x){
+	var n = x.length;
+	var y = new Array();// y[0] = y_re[]; y[1] = y_im[];
+	y[0] = new Array();
+	y[1] = new Array();
+	for(var i=0;i<n;i++){
+		y[0][i] = 0;
+		y[1][i] = 0;
+		for(var j=0;j<n;j++){
+			y[0][i] += x[j]*Math.cos(2*Math.PI/n*i*j);
+			y[1][i] += x[j]*(-Math.sin(2*Math.PI/n*i*j));
+		}
+	}
+	return y;
+}
 
-//
-//FFT Module without "use asm" for comparison
-//
-function FftModuleNoAsm(stdlib, foreign, heap) {
-	//"use asm";
-	var FLOAT64 = new stdlib.Float64Array(heap);
-	var sqrt=stdlib.Math.sqrt;
-	var sz=0;
-	function setup(n) {
-		n=n|0;
-		sz=n;
-	}
-	function fft(normalize) {
-		normalize=normalize|0;
-		var m=0, mh=0, i=0, j=0, k=0;
-		var wr=0.0, wi=0.0, xr=0.0, xi=0.0, w=0.0, r=0.0;
-		var tcnt=0;
-		for(mh=1;(m=mh<<1)<=(sz|0);mh=m) {
-			for(i=0;(i|0)<(mh|0);i=(i+1)|0) {
-				// revised
-				// wr=+FLOAT64[(sz*16+tcnt)>>3];
-				// wi=+FLOAT64[(sz*16+tcnt+8)>>3];
-				wr+=FLOAT64[(sz*16+tcnt)>>3];
-				wi+=FLOAT64[(sz*16+tcnt+8)>>3];
-				tcnt=(tcnt+16)|0;
-				for(j=i;(j|0)<(sz|0);j=(j+m)|0) {
-					k=(j+mh)|0;
-					xr=wr*FLOAT64[k<<3>>3]-wi*FLOAT64[(sz+k)<<3>>3];
-					xi=wr*FLOAT64[(sz+k)<<3>>3]+wi*FLOAT64[k<<3>>3];
-					FLOAT64[k<<3>>3] = +FLOAT64[j<<3>>3]-xr;
-					FLOAT64[(sz+k)<<3>>3] = +FLOAT64[(sz+j)<<3>>3]-xi;
-					FLOAT64[j<<3>>3] = +FLOAT64[j<<3>>3] + xr;
-					FLOAT64[(sz+j)<<3>>3] = +FLOAT64[(sz+j)<<3>>3] + xi;
-				}
-			}
-		}
-		if(normalize) {
-			r = +(1.0/+(sz|0));
-			for(i=0;(i|0)<(sz|0);i=(i+1)|0) {
-				FLOAT64[i<<3>>3]=+FLOAT64[i<<3>>3]*r;
-				FLOAT64[(sz+i)<<3>>3]=+FLOAT64[(sz+i)<<3>>3]*r;
-			}
+function org_idft(y){
+	var n = y[0].length;
+	// input : y[0] = y_re[]; y[1] = y_im[];
+	var w_re = Math.cos(-2*Math.PI/n);
+	var w_im = -Math.sin(-2*Math.PI/n);
+	var x = new Array();
+	for(var i=0;i<n;i++){
+		x[i] = 0;
+		for(var j=0;j<n;j++){
+			x[i]+= (y[0][j]*Math.cos(2*Math.PI/n*i*j) - y[1][j]*Math.sin(2*Math.PI/n*i*j))/n;
+			// calculate real part only 
 		}
 	}
-	function mag() {
-		var i=0,j=0;
-		for(i=0;(i|0)<(sz|0);i=(i+1)|0) {
-			j=(sz*2-i-1)|0;
-			FLOAT64[i<<3>>3]=sqrt(FLOAT64[i<<3>>3]*FLOAT64[i<<3>>3]+FLOAT64[j<<3>>3]*FLOAT64[j<<3>>3]);
-		}
-	}
-	return {
-		setup:setup,
-		fft:fft,
-		mag:mag
-	};
+	return x;
 }
-//
-//FFT Module with "use asm"
-//
-function FftModuleAsm(stdlib, foreign, heap) {
-	"use asm";
-	var FLOAT64 = new stdlib.Float64Array(heap);
-	var sqrt=stdlib.Math.sqrt;
-	var sz=0;
-	function setup(n) {
-		n=n|0;
-		sz=n;
-	}
-	function fft(normalize) {
-		normalize=normalize|0;
-		var m=0, mh=0, i=0, j=0, k=0;
-		var wr=0.0, wi=0.0, xr=0.0, xi=0.0, w=0.0, r=0.0;
-		var tcnt=0;
-		for(mh=1;(m=mh<<1)<=(sz|0);mh=m) {
-			for(i=0;(i|0)<(mh|0);i=(i+1)|0) {
-				// revised
-				// wr=+FLOAT64[(sz*16+tcnt)>>3];
-				// wi=+FLOAT64[(sz*16+tcnt+8)>>3];
-				wr+=FLOAT64[(sz*16+tcnt)>>3];
-				wi+=FLOAT64[(sz*16+tcnt+8)>>3];
-				tcnt=(tcnt+16)|0;
-				for(j=i;(j|0)<(sz|0);j=(j+m)|0) {
-					k=(j+mh)|0;
-					xr=wr*FLOAT64[k<<3>>3]-wi*FLOAT64[(sz+k)<<3>>3];
-					xi=wr*FLOAT64[(sz+k)<<3>>3]+wi*FLOAT64[k<<3>>3];
-					FLOAT64[k<<3>>3] = +FLOAT64[j<<3>>3]-xr;
-					FLOAT64[(sz+k)<<3>>3] = +FLOAT64[(sz+j)<<3>>3]-xi;
-					FLOAT64[j<<3>>3] = +FLOAT64[j<<3>>3] + xr;
-					FLOAT64[(sz+j)<<3>>3] = +FLOAT64[(sz+j)<<3>>3] + xi;
-				}
-			}
-		}
-		if(normalize) {
-			r = +(1.0/+(sz|0));
-			for(i=0;(i|0)<(sz|0);i=(i+1)|0) {
-				FLOAT64[i<<3>>3]=+FLOAT64[i<<3>>3]*r;
-				FLOAT64[(sz+i)<<3>>3]=+FLOAT64[(sz+i)<<3>>3]*r;
-			}
-		}
-	}
-	function mag() {
-		var i=0,j=0;
-		for(i=0;(i|0)<(sz|0);i=(i+1)|0) {
-			j=(sz*2-i-1)|0;
-			FLOAT64[i<<3>>3]=sqrt(FLOAT64[i<<3>>3]*FLOAT64[i<<3>>3]+FLOAT64[j<<3>>3]*FLOAT64[j<<3>>3]);
-		}
-	}
-	return {
-		setup:setup,
-		fft:fft,
-		mag:mag
-	};
-}
-function FftModule(sz,asm) {
-	var i,j,k;
-	this.sz=sz;
-	this.bufsz=sz*32;
-	if(this.bufsz<4096)
-		this.bufsz=4096;
-	this.heap=new ArrayBuffer(this.bufsz);
-	this.foreign=new ArrayBuffer(4096);
-	this.flt64=new Float64Array(this.heap);
-	if(asm)
-		this.fftasm=FftModuleAsm(window,this.foreign,this.heap);
-	else
-		this.fftasm=FftModuleNoAsm(window,this.foreign,this.heap);
-	this.fftasm.setup(sz);
-	var t,th=Math.PI;
-	for(i=1,j=0;i<sz;i<<=1) {
-		t=0.0;
-		for(k=0;k<i;++k,j+=2) {
-			t+=th;
-			this.flt64[sz*2+j]=Math.cos(t);
-			this.flt64[sz*2+j+1]=Math.sin(t);
-		}
-		th*=0.5;
-	}
-	this.bitrev=new Array(sz);
-	this.bitrev[0]=0;
-	this.bitrev[sz-1]=sz-1;
-	for(j=1,i=0;j<sz-1;++j) {
-		for(var k=sz>>1;k>(i^=k);k>>=1)
-			;
-		this.bitrev[j]=i;
-	}
-	this.fft=function(real,imag,normalize,asm) {
-		var i;
-		for(i=0;i<this.sz;++i) {
-			this.flt64[this.bitrev[i]]=real[i];
-			this.flt64[this.sz+this.bitrev[i]]=imag[i];
-		}
-		this.fftasm.fft(normalize);
-		for(i=0;i<this.sz;++i) {
-			real[i]=this.flt64[i];
-			imag[i]=this.flt64[this.sz+i];
-		}
-	}
-	this.fftmag=function(real,imag) {
-		var i;
-		for(i=0;i<this.sz;++i) {
-			this.flt64[this.bitrev[i]]=real[i];
-			this.flt64[this.sz+this.bitrev[i]]=imag[i];
-		}
-		this.fftasm.fft(1);
-		this.fftasm.mag();
-		for(i=0;i<this.sz;++i) {
-			real[i]=this.flt64[i];
-		}
-	}
-}
-/* fft method */
 
-function kernel_rate(spike_time, y1){
+function kernel_rate(spike_time, y1, y2){
 
     var T = spike_time[spike_time.length-1] - spike_time[0];
     var dt_samp = spike_time[1]-spike_time[0];
@@ -647,7 +505,7 @@ function kernel_rate(spike_time, y1){
     var t = new Array();
     t[0] = spike_time[0]
     for(var i=0; i<t_num-1;i++){
-    	t[i+1]=t[i]+T/(t_num-1);
+    	t[i+1]=t[i]+T/(t_num);
     }
 	var dt = t[1]-t[0];
 	for(var i=0;i<t.length-1;i++){
@@ -731,16 +589,27 @@ function kernel_rate(spike_time, y1){
 	    k = k + 1;
 	}
 	var yh = new Array();
-	yh = fftkernel(y_hist,optw/dt)
+	yh = fftkernel(y_hist,optw/dt);
 	var sum_yh = 0;
 	for(var i=0;i<yh.length;i++){
 		sum_yh += yh[i];
 	}
-	var maxy = yh[0]/sum_yh/dt;
 	for(var i=0;i<yh.length;i++){
 		y1[i] = yh[i]/sum_yh/dt;
-		if(maxy<y1[i]) maxy = y1[i];
 	}
+	/* reflection part */
+	var yh2 = new Array();
+	yh2 = fftkernel_ref(y_hist,optw/dt);
+	sum_yh = 0;
+	for(var i=0;i<yh2.length;i++){
+		sum_yh += yh2[i];
+	}
+	var maxy = yh2[0]/sum_yh/dt;
+	for(var i=0;i<yh2.length;i++){
+		y2[i] = yh2[i]/sum_yh/dt;
+		if(maxy<y2[i]) maxy = y2[i];
+	}
+	
 	var res = new Array(2);
 	res[0] = maxy;
 	res[1] = optw;
@@ -767,45 +636,73 @@ function kernel_cost_function(y_hist, N, w, dt){
 
 function fftkernel(x, width){
 	var L=x.length;
-	var Lmax = L+3*width;
+	var Lmax = Math.floor(L+3*width);
 	var n=1;
 	while(n<Lmax){
 		n=n*2;
 	}
-	var imag=new Float64Array(n);
-	var real=new Float64Array(n);
+	var x_buf=new Float64Array(n);
 	for (var k=0;k<n;k++){
-		imag[k]=0;
-		real[k]=0;
+		x_buf[k]=0;
 	}
 	for (var k=0;k<x.length;k++){
-		real[k]=x[k];
+		x_buf[k]=x[k];
 	}
-	fftnoasm=new FftModule(n,false);
-	fftnoasm.fft(real,imag,0);
+	var y_new = new Array();
+	y_new = org_dft(x_buf);
+	
 	var f_old = new Array();
-	for (var k=0;k<real.length;k++){
-		f_old[k]=k/real.length;
+	for (var k=0;k<n;k++){
+		f_old[k]=k/n;
 	}
 	var f = new Array();
 	var k=0;
-	for (;k<Math.ceil(real.length/2)+1;k++){
-		f[real.length-1-k]=f_old[k+1];
+	for (;k<Math.ceil(n/2)+1;k++){
+		f[n-1-k]=f_old[k+1];
 		f[k]=-f_old[k];
 	}
 	var K = new Array();
-	for(var j=0;j<real.length;j++){
+	for(var j=0;j<n;j++){
 		K[j]=Math.exp(-0.5*Math.pow(width*2*Math.PI*f[j],2));
 	}
-	var y_buf = new Array(real.length);
-	for(var j=0;j<real.length;j++){
-		y_buf[j] = real[j]*K[j];
-		imag[j] = imag[j]*K[j];
+	for(var j=0;j<n;j++){
+		y_new[0][j] = y_new[0][j]*K[j];
+		y_new[1][j] = y_new[1][j]*K[j];
 	}
-	fftnoasm.fft(y_buf,imag,1);
-
-	return y_buf.slice(0,L);
+	var x_new = new Array();
+	x_new = org_idft(y_new);
+	return x_new.slice(0,L);
 }
+
+
+function fftkernel_ref(x,width){
+	var yh = fftkernel(x,width);
+	var halflen = Math.ceil(x.length/2);
+	var remlen = x.length - halflen;
+	var x_revleft = new Array();
+	for(var i=0;i<remlen;i++){
+		x_revleft[i] = 0;
+	}
+	for(var i=0;i<halflen;i++){
+		x_revleft[remlen+i] = x[i];
+	}
+	var addleft = fftkernel(x_revleft,width);
+	var x_revright = new Array();
+	for(var i=0;i<halflen;i++){
+		x_revright[i] = x[halflen+i];
+	}
+	for(var i=0;i<remlen;i++){
+		x_revright[halflen+i] = 0;
+	}
+	var addright = fftkernel(x_revright,width);
+	var y = new Array();
+	for(var i=0;i<Math.ceil(yh.length/2);i++){
+		y[i] = yh[i] + addleft[halflen-1-i];
+		y[x.length-i-1] = yh[x.length-i-1] + addright[halflen+i];
+	}
+	return y;
+}
+
 
 function logexp(x){
 	var y = new Array();
