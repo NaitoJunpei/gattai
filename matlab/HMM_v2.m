@@ -29,7 +29,7 @@ function [rate_func] = HMM_v2(x)
 
 onset = x(1) - 0.001 * (x(length(x)) - x(1));
 offset = x(length(x)) + 0.001 * (x(length(x)) - x(1));
-optw = (offset-onset)/(length(x)-1) * 5;
+optw = (offset-onset)/(length(x)) * 5;
 rate_func = get_hmm_ratefunc(x, optw);
 
 drawHMM(rate_func)
@@ -43,7 +43,7 @@ bin_num=ceil(vec_spkt(length(vec_spkt))/bin_width);
 vec_Xi = zeros(bin_num, 1);
 for i=1:length(vec_spkt)
     bin_id=fix(vec_spkt(i)/bin_width)+1;
-    if bin_id<bin_num
+    if bin_id<bin_num + 1
         vec_Xi(bin_id) = vec_Xi(bin_id)+1;
     end
 end
@@ -62,7 +62,7 @@ end
 % func to get alpha and C
 function [vec_C, mat_alpha] = get_alpha_C(mat_A, vec_pi, mat_emission)
 num_of_states=length(vec_pi);
-num_of_obs=length(mat_emission);
+num_of_obs=length(mat_emission(:, 1));
 
 vec_C = zeros(num_of_obs,1);
 %n=1
@@ -90,7 +90,7 @@ end
 
 function mat_beta = get_beta(mat_A, vec_pi, mat_emission, vec_C)
 num_of_states=length(vec_pi);
-num_of_obs=length(mat_emission);
+num_of_obs=length(mat_emission(:, 1));
 
 % initialize
 mat_beta = zeros(num_of_obs, num_of_states);
@@ -328,7 +328,9 @@ for i = 2 : length(y)
         ind = ind + 1;
     end
 end
-
-plot(x_new, y_new)
+x_new(ind) = x(length(x));
+y_new(ind) = y(length(y));
+plot(x_new, y_new);
+axis([min(x) max(x) 0 max(y) * 1.1]);
 end
 
