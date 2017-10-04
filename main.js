@@ -491,6 +491,51 @@ function org_idft(y){
 	return x;
 }
 
+function org_fft(n,re,im){
+	var theta = 2*Math.PI/n;
+	var firstr = new Array();
+	var firsti = new Array();
+	var secondr = new Array();
+	var secondi = new Array();
+
+	for(var i=0;i<n/2;i++){
+		firstr[i] = re[2*i];
+		firsti[i] = im[2*i];
+	}
+	for(var i=0;i<n/2;i++){
+		secondr[i] = re[2*i+1];
+		secondi[i] = im[2*i+1];
+	}
+	if(n/2>1){
+		org_fft(n/2,firstr,firsti);
+		org_fft(n/2,secondr,secondi);
+	}
+	for(var i=0;i<n/2;i++){
+		var wr = Math.cos(theta * i);
+		var wi = Math.sin(theta * i);
+		re[i] = firstr[i] + wr*secondr[i] - wi*secondi[i];
+		im[i] = firsti[i] + wr*secondi[i] + wi*secondr[i];
+
+		wr = Math.cos(theta * (i+n/2));
+		wi = Math.sin(theta * (i+n/2));
+		re[i+n/2] = firstr[i] + wr*secondr[i] - wi*secondi[i];
+		im[i+n/2] = firsti[i] + wr*secondi[i] + wi*secondr[i];
+	}
+}
+
+function org_ifft(n,re,im){
+	for(var i=0;i<n;i++){
+		im[i] = -im[i];
+	}
+	org_fft(n,re,im);
+	for(var i=0;i<n;i++){
+		re[i] = re[i]/n
+		im[i] = -im[i]/n;
+	}
+}
+
+
+
 function kernel_rate(spike_time, y1, y2){
 
     var T = spike_time[spike_time.length-1] - spike_time[0];
@@ -641,6 +686,7 @@ function fftkernel(x, width){
 	while(n<Lmax){
 		n=n*2;
 	}
+	/*
 	var x_buf=new Float64Array(n);
 	for (var k=0;k<n;k++){
 		x_buf[k]=0;
@@ -650,6 +696,17 @@ function fftkernel(x, width){
 	}
 	var y_new = new Array();
 	y_new = org_dft(x_buf);
+	*/
+	var re=new Float64Array(n);
+	var im=new Float64Array(n);
+	for (var k=0;k<n;k++){
+		re[k]=0;
+		im[k]=0;
+	}
+	for (var k=0;k<x.length;k++){
+		re[k]=x[k];
+	}
+	org_fft(n,re,im);
 	
 	var f_old = new Array();
 	for (var k=0;k<n;k++){
@@ -665,6 +722,7 @@ function fftkernel(x, width){
 	for(var j=0;j<n;j++){
 		K[j]=Math.exp(-0.5*Math.pow(width*2*Math.PI*f[j],2));
 	}
+	/*
 	for(var j=0;j<n;j++){
 		y_new[0][j] = y_new[0][j]*K[j];
 		y_new[1][j] = y_new[1][j]*K[j];
@@ -672,6 +730,14 @@ function fftkernel(x, width){
 	var x_new = new Array();
 	x_new = org_idft(y_new);
 	return x_new.slice(0,L);
+	*/
+
+	for(var j=0;j<n;j++){
+		re[j] = re[j]*K[j];
+		im[j] = im[j]*K[j];
+	}
+	org_ifft(n,re,im);
+	return re.slice(0,L);
 }
 
 
