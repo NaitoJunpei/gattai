@@ -329,8 +329,10 @@ def HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi) :
 
     for j in range(0, num_of_states) :
         mat_hs_seq[j][0] = j
-        print(vec_pi[j], mat_emission[0][j])
-        vec_logp_seq[j]  = math.log(vec_pi[j] * mat_emission[0][j]) / math.log(10)
+        if (vec_pi[j] * mat_emission[0][j] == 0) :
+            vec_logp_seq[j] = -np.inf
+        else :
+            vec_logp_seq[j]  = math.log(vec_pi[j] * mat_emission[0][j]) / math.log(10)
 
     for n in range(1, num_of_obs) :
         # copy the seq. up to n - 1
