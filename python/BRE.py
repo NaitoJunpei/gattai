@@ -7,9 +7,9 @@
 # をすると、ファイル内の関数が、BRE.(関数名)の形で実行可能になります。
 
 # ユーザーが使用するのはBRE関数のみで十分です。
-# BRE関数は、spike列を引数に取ります。
+# BRE(Bayesian Rate Estimate)関数は、spike列を引数に取ります。
 # spike列の形式は、list、numpy.arrayなどが利用可能です。
-# EMアルゴリズムでパラメータを推定し、グラフを描画します。
+# EMアルゴリズムでパラメータbetaを推定し、推定したbetaの値を使ってカルマンフィルタで補正をかけてグラフを描画します。
 # 値を返しません。
 ##########
 
@@ -29,6 +29,19 @@ def BRE(spike_times) :
     kalman = KalmanFilter(ISI, beta)
 
     drawBRE(spike_times, kalman)
+
+####
+# EMmethod関数
+# EMアルゴリズムを利用してパラメータbetaの推定を行います。
+# パラメータ推定の際に、カルマンフィルタを利用しています。
+
+# 引数
+# ISI: スパイクとスパイクの間の時間の列
+# beta0: パラメータの初期値
+
+# 返り値
+# 推定したパラメータbetaの値
+####
 
 def EMmethod(ISI, beta0) :
     N = len(ISI)
@@ -53,6 +66,18 @@ def EMmethod(ISI, beta0) :
         beta_new = (N - t0 - 1) / (2 * beta_new)
 
     return beta_new
+
+####
+# KalmanFilter関数
+# カルマンフィルタを利用して、観測されたスパイク列からスパイクの発生率を推定します
+
+# 引数
+# ISI: スパイクとスパイクの間の時間の列
+# beta: パラメータ
+
+# 返り値
+# 推定したスパイクの発生率
+####
 
 def KalmanFilter(ISI, beta) :
     N = len(ISI)
@@ -91,6 +116,18 @@ def KalmanFilter(ISI, beta) :
         COVL_N[i] = H * VL_N[i + 1]
 
     return [EL_N, VL_N, COVL_N]
+
+####
+# drawBRE関数
+# カルマンフィルタで推定したスパイクの発生率の様子をグラフで描画します
+
+# 引数
+# spike_times: スパイク列
+# kalman: カルマンフィルタで推定した値
+
+# 返り値
+# なし
+####
 
 def drawBRE(spike_times, kalman) :
     xaxis = []

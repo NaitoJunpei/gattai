@@ -66,7 +66,21 @@ def drawHMM(spike_times, rate_hmm) :
     plt.ylim(ymin = 0)
     plt.show()
 
+####
+# get_hmm_ratefunc関数
+# EMアルゴリズムを利用し、パラメータを推定しながらスパイクレートを推定します
+# 推定されるパラメータには、行列A、ベクトルpi、ベクトルlambda、行列Gamma、ベクトルXi、行列Xiがあります
 
+# 引数
+# spike_times: スパイク列
+# bin_width: ビン幅 オンセットの時間からオフセットまでの時間をスパイク数で割った値の5倍に設定されています
+# max_value: 最後のスパイクの時間
+# min_value: 最初のスパイクの時間
+
+# 返り値
+# 推定したスパイクレート
+####
+    
 def get_hmm_ratefunc(spike_times, bin_width, max_value, min_value) :
     EMloop_num = 5000
     
@@ -152,7 +166,7 @@ def get_vec_Xi(vec_spkt, bin_width) :
 # 隠れマルコフモデルの期待値を計算するステップです。
 
 # 引数
-# vec_Xi: ベクトルX_i、numpy arrayクラスで表現します。
+# vec_Xi: ベクトルXi、numpy arrayクラスで表現します。
 # mat_A: 行列A、numpy arrayクラスで表現します。
 # vec_lambda: ベクトルラムダ、numpy arrayクラスで表現します。
 # vec_pi: ベクトルパイ、numpy arrayクラスで表現します。
