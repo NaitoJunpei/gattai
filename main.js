@@ -553,7 +553,36 @@ function org_ifft(n,re,im){
 	}
 }
 
+/*
+Function kernel_rate returns optimized kernel densities estimate using a Gauss kernel function.
 
+Input arguments
+spike_time: sample data list.
+
+Output arguments
+y1: Estimated density using a Gauss kernel function.
+y2: Estimated density using a Gauss kernel function with reflection boundary.
+maxy: Maximum value of y2.
+optw: Optimal kernel bandwidth.
+
+Optimization principle: 
+The optimal bandwidth is obtained as a minimizer of the fromula,
+sum_{i, j} \int k(x - x_i) k(x - x_j) dx - 2 sum_{i~=j} k(x_i - x_j),
+where k(x) is the kernel function, according to
+
+Hideaki Shimazaki and Shigeru Shinomoto
+Kernel Bandwidth Optimization in Spike Rate Estimation
+Journal of Computational Neuroscience 2010
+http://dx.doi.org/10.1007/s10827-009-0180-4
+
+The above optimization is based on a principle of minimizing
+expected L2 loss function between the kernel estimate and an
+unknown underlying density function. An assumption is merely
+that samples are drawn from the density independently each other.
+
+For more information, please visit
+http://2000.jukuin.keio.ac.jp/Shimazaki
+*/
 
 function kernel_rate(spike_time, y1, y2){
 
@@ -698,6 +727,23 @@ function kernel_cost_function(y_hist, N, w, dt){
 	return C;
 }
 
+/*
+fftkernel(x, width)
+
+Function fftkernel applies the Gauss kernel smoother to an input signal using FFT algorithm.
+
+Input argument
+x: Sample signal vector
+width: Kernel bandwidth (the standard deviation) in unit of the sampling resplution of x.
+
+Output argument
+re.slice(0, L): Smoothed signal.
+
+MAY 5 / 23, 2012 Author Hideaki Shimazaki
+RIKEN Brain Science Institute
+http://2000.jukuin.keio.ac.jp/shimazaki
+*/
+
 function fftkernel(x, width){
 	var L=x.length;
 	var Lmax = Math.floor(L+3*width);
@@ -759,6 +805,22 @@ function fftkernel(x, width){
 	return re.slice(0,L);
 }
 
+/*
+fftkernel_ref(x, width)
+
+Function fftkernel applies the Gauss kernel smoother to an input signal using FFT algorithm with reflection boundary.
+
+Input argument
+x: Sample signal vector
+width: Kernel bandwidth (the standard deviation) in unit of the sampling resplution of x.
+
+Output argument
+y: Smoothed signal.
+
+MAY 5 / 23, 2012 Author Hideaki Shimazaki
+RIKEN Brain Science Institute
+http://2000.jukuin.keio.ac.jp/shimazaki
+*/
 
 function fftkernel_ref(x,width){
 	var yh = fftkernel(x,width);
