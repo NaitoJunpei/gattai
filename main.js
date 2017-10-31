@@ -432,6 +432,25 @@ function DrawGraph_HMM(spike_time){
 	svg.append("rect").attr("x", x_base).attr("y", 0).attr("width", width_graph).attr("height", height_graph).attr("stroke","black").attr("stroke-width",1).attr("fill","none");
 }
 
+/*
+DrawGraph_Bayes
+カルマンフィルタによってスパイクの発生率を推定、グラフに描画する.
+
+引数
+spike_time: スパイク列
+
+返り値
+なし
+
+出力
+推定したスパイクの発生率のグラフ
+
+内部変数
+wrap, svg, maxy, xy: それぞれグラフの描画に必要
+kalman_data: カルマンフィルタによって推定したスパイクの発生率
+*/
+
+
 function DrawGraph_Bayes(spike_time){
 	var wrap = d3.select('#graph_Bayes');
 	wrap.select("svg").remove();	// 初期化
