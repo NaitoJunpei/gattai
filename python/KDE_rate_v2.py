@@ -9,7 +9,7 @@ import math
 
 # Input arguments:
 # spike_times: sample data list or array.
-# Output aurguments:
+# Output arguments:
 # y:  Estimated density
 # t:  Points at which estimation was computed.
 #     The same as tin if tin is provided.
@@ -188,7 +188,7 @@ def fftkernel(x, w) :
     # y : Smoothed signal.
     #
     # MAY 5 / 23, 2012 Author Hideaki Shimazaki
-    # RIKEN Brain Science Insitute
+    # RIKEN Brain Science Institute
     # http://2000.jukuin.keio.ac.jp/shimazaki
     # 
     # (New correction in version 1)

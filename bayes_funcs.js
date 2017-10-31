@@ -10,6 +10,23 @@ var VL_N = new Array();
 var COVL_N = new Array();
 var N;
 
+/*
+SecondStage関数
+EMアルゴリズムによってパラメータbetaを最適化し、そのパラメータbetaを使ってカルマンフィルタでスパイクの発生率を推定する.
+
+引数
+spike_time: スパイク列
+
+返り値
+kalman_data: スパイクの発生率
+
+内部変数
+mu: 平均発火率
+beta0: ハイパーパラメータbetaの初期値
+beta: EMアルゴリズムによって最適化されたハイパーパラメータbeta
+kalman_data: 推定されたスパイクの発生率
+*/
+
 function SecondStage(spike_time){
 	var mu = spike_time.length / (spike_time[spike_time.length - 1] - spike_time[0]);	// 平均発火率
 	var beta0 = Math.pow(mu,-3);
@@ -27,6 +44,24 @@ function ThirdStage(spike_time,beta){
 	var dt = NGFdt();
 	return nongaussian_data;
 }
+*/
+
+/*
+EMmethod関数
+EMアルゴリズムを利用してパラメータbetaの推定を行う. パラメータ推定の内部でカルマンフィルタを利用している.
+
+引数
+spike_time: スパイク列
+beta0: パラメータの初期値
+
+返り値
+beta2: 推定されたパラメータbeta
+
+内部変数
+beta1: 更新前のパラメータの値
+beta2: 更新後のパラメータの値
+T0: (データの不具合により)同じスパイクが2回以上記述されていた場合に結果を補正するための値
+kalman: スパイク列にカルマンフィルタを適用した値
 */
 
 function EMmethod(spike_time,beta0){
@@ -52,6 +87,21 @@ function EMmethod(spike_time,beta0){
 	return beta2;
 }
 
+/*
+KFinitialize関数
+カルマンフィルタで使用するNの値, EL, VLの初期値を設定する.
+
+引数
+spike_time: スパイク列
+
+返り値
+なし
+
+内部変数
+mu: 平均発火率の逆数
+IEL: muと同じ
+IVL: muの1/3の二乗
+*/
 function KFinitialize(spike_time){
 	N = spike_time.length - 1;
 	// N = interspike interval length
@@ -67,6 +117,19 @@ function KFinitialize(spike_time){
 	EL[0][0] = (A+Math.sqrt(A*A+4*IVL))/2;
 	VL[0][0] = 1/(1/IVL+1/(EL[0][0]*EL[0][0]));
 }
+
+/*
+KalmanFilter関数
+カルマンフィルタを利用してスパイクの発生率を推定する.
+
+引数
+spike_time: スパイク列
+beta: ハイパーパラメータbeta
+
+返り値
+outdata: 推定したスパイクの発生率.
+outdata[0]が値, [1]がその分散, [2]が共分散となっている.
+*/
 
 function KalmanFilter(spike_time,beta){
 	for(var i=0;i<N-1;i++){
