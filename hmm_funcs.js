@@ -514,6 +514,7 @@ function get_hmm_ratefunc(spike_time, bin_width)
     return rate_func;
 }
 /*
+ * 旧関数
 function Estimate_rate_hmm(spike_time, bin_width)
 {
     var EMloop_num=5000;		//number of EM itteration

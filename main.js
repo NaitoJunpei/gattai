@@ -210,7 +210,7 @@ function SSOS(spike_time) {
 	}
 	if (lv < 1) np = "regular";
 	else np = "bursty";
-	//	binの数を変化(最大500)　計算量的にはここを短縮したい気持ち
+	//	binの数を変化(最大500)　
 
 	var TT = spike_time.concat(spike_time.map(function(element) {
 		return element + (offset - onset);
