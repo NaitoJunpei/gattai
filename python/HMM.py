@@ -177,8 +177,8 @@ def get_vec_Xi(vec_spkt, bin_width) :
 # vec_pi: ベクトルパイ、numpy arrayクラスで表現します。
 
 # 返り値
-# mat_Gamma: 
-# mat_Xi: 
+# mat_Gamma: 行列Gamma、numpy arrayクラスで表現します。
+# mat_Xi: 行列Xi、numpy arrayクラスで表現します。
 ####
 
 def HMM_E_step(vec_Xi, mat_A, vec_lambda, vec_pi) :
@@ -231,7 +231,7 @@ def get_beta(mat_A, vec_pi, mat_emission, vec_C) :
     num_of_states = len(vec_pi)
     num_of_obs    = len(mat_emission)
 
-    # initialize
+    # 初期化
     mat_beta_buf = np.zeros([num_of_obs, num_of_states])
 
     mat_beta_buf[num_of_obs - 1] = 1.0
@@ -279,6 +279,21 @@ def get_Gamma_Xi(mat_A, mat_emission, mat_alpha, mat_beta, vec_C) :
 ####
 # HMM_M_step関数
 # 隠れマルコフモデルの、尤度最大化ステップです。
+# ベクトルpi、ベクトルlambda、行列Aの値を更新します。
+
+# 引数
+# vec_Xi: ベクトルXi、numpy arrayクラスで表現します。
+# mat_A: 行列A、numpy arrayクラスで表現します。
+# vec_lambda: ベクトルラムダ、numpy arrayクラスで表現します。
+# vec_pi: ベクトルパイ、numpy arrayクラスで表現します。
+# mat_Gamma: 行列Gamma、numpy arrayクラスで表現します。
+# mat_Xi: 行列Xi、numpy arrayクラスで表現します。
+
+# 返り値
+# vec_pi_new: ベクトルパイ、numpy arrayクラスで表現します。
+# vec_lambda_new: ベクトルラムダ、numpy arrayクラスで表現します。
+# mat_A_new: 行列A、numpy arrayクラスで表現します。
+
 ####
 
 def HMM_M_step(vec_Xi, mat_A, vec_lambda, vec_pi, mat_Gamma, mat_Xi) :
@@ -326,6 +341,20 @@ def HMM_M_step(vec_Xi, mat_A, vec_lambda, vec_pi, mat_Gamma, mat_Xi) :
     res = [vec_pi_new, vec_lambda_new, mat_A_new]
     return res
 
+
+####
+# HMM_Viterbi関数
+# Viterbiアルゴリズムによる探索を行います。
+
+# 引数
+# vec_Xi: ベクトルXi、numpy arrayクラスで表現します。
+# mat_A: 行列A、numpy arrayクラスで表現します。
+# vec_lambda: ベクトルラムダ、numpy arrayクラスで表現します。
+# vec_pi: ベクトルパイ、numpy arrayクラスで表現します。
+
+# 返り値
+# vec_hs_seq: 最適なvec_lambdaのインデックスを返します。
+####
 def HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi) :
     mat_emission  = get_mat_emission(vec_Xi, vec_lambda)
     num_of_states = len(mat_A)
@@ -341,7 +370,6 @@ def HMM_Viterbi(vec_Xi, mat_A, vec_lambda, vec_pi) :
             vec_logp_seq[j]  = math.log(vec_pi[j] * mat_emission[0][j]) / math.log(10)
 
     for n in range(1, num_of_obs) :
-        # copy the seq. up to n - 1
         mat_hs_seq_buf   = mat_hs_seq.copy()
         vec_logp_seq_buf = vec_logp_seq.copy()
 
