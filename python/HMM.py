@@ -17,8 +17,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import math
+import time
 
 def HMM(spike_times) :
+    start = time.time()
     spike_times = np.array(list(spike_times))
     max_value   = max(spike_times)
     min_value   = min(spike_times)
@@ -27,6 +29,8 @@ def HMM(spike_times) :
     bin_width   = (offset - onset) / len(spike_times) * 5
 
     rate_hmm = get_hmm_ratefunc(spike_times, bin_width, max_value, min_value)
+    end = time.time()
+    print(end - start)
 
     drawHMM(spike_times, rate_hmm)
 
@@ -48,7 +52,7 @@ def drawHMM(spike_times, rate_hmm) :
     yaxis = [rate_hmm[0, 1]]
     tempx_old = tempx = rate_hmm[0, 0]
     tempy_old = tempy = rate_hmm[0, 1]
-    for i in range(0, len(rate_hmm) - 1) :
+    for i in range(0, len(rate_hmm)) :
         tempx, tempy = rate_hmm[i]
         if (tempy != tempy_old) :
             mid = (tempx + tempx_old) / 2
@@ -137,6 +141,7 @@ def get_hmm_ratefunc(spike_times, bin_width, max_value, min_value) :
     rate_func  = np.empty([len(vec_Xi), 2])
 
     c_time = 0.0
+    print(loop)
 
     for n in range(0, len(vec_Xi)) :
         state_id        = vec_hidden[n]
@@ -196,34 +201,26 @@ def get_alpha_C(mat_A, vec_pi, mat_emission) :
     num_of_obs    = len(mat_emission)
 
     alpha_0 = np.array([mat_emission[0][i] * vec_pi[i] for i in range(0, num_of_states)])
-    C_0     = 0.0
-    for alpha in alpha_0 :
-        C_0 += alpha
+    C_0     = sum(alpha_0)
 
     vec_C_buf     = np.empty(num_of_obs)
     vec_C_buf[0]  = (C_0)
     alpha_0       = alpha_0 / C_0
-    mat_alpha_buf = []
-    mat_alpha_buf.append(list(alpha_0.copy()))
+    mat_alpha_buf = np.zeros([num_of_obs, num_of_states])
+    mat_alpha_buf[0] = alpha_0.copy()
 
     for n in range(1, num_of_obs) :
+        row_vec_alpha_buf = mat_alpha_buf[n - 1]
         alpha_n = np.empty([num_of_states])
-        for i in range(0, num_of_states) :
-            sum_j = 0.0
-            for j in range(0, num_of_states) :
-                sum_j += mat_alpha_buf[n - 1][j] * mat_A[j][i]
+        J = row_vec_alpha_buf.dot(mat_A)
+        alpha_n = mat_emission[n] * J
 
-            alpha_n_i = mat_emission[n][i] * sum_j
-            alpha_n[i] = alpha_n_i
+        C_n = sum(alpha_n)
 
-        C_n = 0.0
-        for alpha in alpha_n :
-            C_n += alpha
-
-        vec_C_buf[n] = pd.Series([C_n])
+        vec_C_buf[n] = np.array([C_n])
         alpha_n = alpha_n / C_n
 
-        mat_alpha_buf.append(list(alpha_n.copy()))
+        mat_alpha_buf[n] = alpha_n.copy()
 
     res = [vec_C_buf, mat_alpha_buf]
 
@@ -237,22 +234,16 @@ def get_beta(mat_A, vec_pi, mat_emission, vec_C) :
     # 初期化
     mat_beta_buf = np.zeros([num_of_obs, num_of_states])
 
-    for i in range(0, num_of_states) :
-        mat_beta_buf[num_of_obs - 1][i] = 1.0
+    mat_beta_buf[num_of_obs - 1] = 1.0
 
     for m in range(1, num_of_obs) :
         n               = num_of_obs - 1 - m
         mat_beta_buf_n1 = mat_beta_buf[n + 1]
         mat_emission_n1 = mat_emission[n + 1]
-        mat_beta_buf_n  = mat_beta_buf[n]
         vec_C_n1        = vec_C[n + 1]
-        for i in range(0, num_of_states) :
-            sum_j = 0.0
-            mat_A_i = mat_A[i]
-            for j in range(0, num_of_states) :
-                sum_j += mat_beta_buf_n1[j] * mat_emission_n1[j] * mat_A_i[j]
-
-            mat_beta_buf_n[i] = (sum_j / vec_C_n1)
+        
+        sum_j = mat_A.dot(mat_beta_buf_n1 * mat_emission_n1)
+        mat_beta_buf[n] = sum_j / vec_C_n1
 
 
     return mat_beta_buf
@@ -273,6 +264,7 @@ def get_Gamma_Xi(mat_A, mat_emission, mat_alpha, mat_beta, vec_C) :
         mat_emission_m1 = mat_emission[m + 1]
         mat_beta_m1     = mat_beta[m + 1]
         vec_C_m1        = vec_C[m + 1]
+
         for i in range(0, num_of_states) :
             mat_Xi_buf_m_i = mat_Xi_buf_m[i]
             mat_alpha_m_i = mat_alpha_m[i]
