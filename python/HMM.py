@@ -141,6 +141,7 @@ def get_hmm_ratefunc(spike_times, bin_width, max_value, min_value) :
     rate_func  = np.empty([len(vec_Xi), 2])
 
     c_time = 0.0
+    print(loop)
 
     for n in range(0, len(vec_Xi)) :
         state_id        = vec_hidden[n]
@@ -263,6 +264,7 @@ def get_Gamma_Xi(mat_A, mat_emission, mat_alpha, mat_beta, vec_C) :
         mat_emission_m1 = mat_emission[m + 1]
         mat_beta_m1     = mat_beta[m + 1]
         vec_C_m1        = vec_C[m + 1]
+
         for i in range(0, num_of_states) :
             mat_Xi_buf_m_i = mat_Xi_buf_m[i]
             mat_alpha_m_i = mat_alpha_m[i]
